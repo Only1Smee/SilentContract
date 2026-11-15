@@ -36,40 +36,44 @@ const MASTERY = [
   { id: 'suit', name: 'Suit Only', test: d => d.success && d.suitOnly },
   { id: 'acc', name: 'Accidental Death', test: d => d.success && d.method === 'accident' },
   { id: 'poi', name: 'Bad Taste (poison)', test: d => d.success && d.method === 'poison' },
-  { id: 's', name: 'S Rank', test: d => d.success && d.rank === 'S' }
+  { id: 's', name: 'S Rank', test: d => d.success && d.rank === 'S' },
+  { id: 'sig', name: 'Signature Kill', test: d => d.success && d.via === 'signature' }
 ];
 
 const ACHIEVEMENTS = [
-  { id: 'first', icon: '🎯', name: 'First Blood', desc: 'Complete your first contract', stat: 'contracts', goal: 1, cash: 5000 },
-  { id: 'sa1', icon: '👻', name: 'Ghost', desc: 'Earn Silent Assassin', stat: 'sa', goal: 1, cash: 8000 },
-  { id: 's1', icon: '⭐', name: 'Professional', desc: 'Earn an S rank', stat: 's', goal: 1, cash: 10000 },
-  { id: 's10', icon: '🌟', name: 'Legend', desc: 'Earn 10 S ranks', stat: 's', goal: 10, cash: 50000 },
-  { id: 'c5', icon: '✈️', name: 'Globetrotter', desc: 'Complete contracts in 5 cities', stat: 'cities', goal: 5, cash: 15000 },
-  { id: 'c15', icon: '🌍', name: 'World Tour', desc: 'Complete a contract in all 15 cities', stat: 'cities', goal: 15, cash: 100000 },
-  { id: 'acc10', icon: '🍌', name: 'Unlucky Coincidences', desc: 'Kill 10 people by accident', stat: 'accident', goal: 10, cash: 20000 },
-  { id: 'poi10', icon: '🧪', name: 'Sommelier', desc: 'Poison 10 people', stat: 'poison', goal: 10, cash: 20000 },
-  { id: 'wire10', icon: '〰️', name: 'Piano Man', desc: '10 Fiber Wire kills', stat: 'wire', goal: 10, cash: 20000 },
-  { id: 'gun10', icon: '🔫', name: 'Marksman', desc: '10 pistol kills', stat: 'pistol', goal: 10, cash: 15000 },
-  { id: 'chand', icon: '💡', name: 'Lights Out', desc: 'Drop a chandelier on a target', stat: 'v_chandelier', goal: 1, cash: 10000 },
-  { id: 'push', icon: '🫸', name: 'Gravity Wins', desc: 'Push a target off a balcony', stat: 'v_push', goal: 1, cash: 10000 },
-  { id: 'sauna', icon: '🔥', name: 'Steam Cleaned', desc: 'Cook a target in the sauna', stat: 'v_sauna', goal: 1, cash: 10000 },
-  { id: 'pool', icon: '⚡', name: 'Shocking', desc: 'Electrocute a target in the pool', stat: 'v_pool', goal: 1, cash: 10000 },
-  { id: 'gas', icon: '💥', name: 'Gas Leak', desc: 'Blow up a target at the stove', stat: 'v_gas', goal: 1, cash: 10000 },
-  { id: 'disg', icon: '🎭', name: 'Master of Disguise', desc: 'Wear all 5 staff disguises', stat: 'disguises', goal: 5, cash: 20000 },
-  { id: 'hide25', icon: '📦', name: 'Out of Sight', desc: 'Hide 25 bodies', stat: 'hidden', goal: 25, cash: 20000 },
-  { id: 'ko50', icon: '✊', name: 'Lights Out, Pal', desc: 'Subdue 50 people', stat: 'ko', goal: 50, cash: 20000 },
-  { id: 'coin50', icon: '🪙', name: 'Heads or Tails', desc: 'Throw 50 coins', stat: 'coins', goal: 50, cash: 10000 },
-  { id: 'mil', icon: '💰', name: 'Millionaire', desc: 'Earn $1,000,000 in total', stat: 'earned', goal: 1000000, cash: 50000 },
-  { id: 'suits', icon: '👔', name: 'Sharp Dressed', desc: 'Own every suit', stat: 'suits', goal: 10, cash: 25000 },
-  { id: 'vault', icon: '🏰', name: 'Kingpin', desc: 'Fully upgrade your hideout', stat: 'hide', goal: 3, cash: 50000 },
-  { id: 'streak', icon: '📅', name: 'Creature of Habit', desc: 'Reach a 7-day login streak', stat: 'streak', goal: 7, cash: 25000 },
-  { id: 'daily10', icon: '✅', name: 'Overachiever', desc: 'Complete 10 daily challenges', stat: 'dailies', goal: 10, cash: 30000 },
-  { id: 'master', icon: '🏅', name: 'Mastered', desc: 'Complete every mastery challenge in one city', stat: 'mastered', goal: 1, cash: 30000 },
-  { id: 'lv10', icon: '🎖️', name: 'Veteran', desc: 'Reach Agent Level 10', stat: 'level', goal: 10, cash: 50000 },
-  { id: 'ch3', icon: '📖', name: 'Following the Money', desc: 'Complete 3 campaign chapters', stat: 'campaign', goal: 3, cash: 15000 },
-  { id: 'ch15', icon: '🗝️', name: 'Ledger Closed', desc: 'Finish the Meridian campaign', stat: 'campaign', goal: 15, cash: 150000 },
-  { id: 'el1', icon: '🦊', name: 'Elusive', desc: 'Eliminate an Elusive Target', stat: 'elusive', goal: 1, cash: 20000 },
-  { id: 'el5', icon: '🐺', name: 'Apex Predator', desc: 'Eliminate 5 Elusive Targets', stat: 'elusive', goal: 5, cash: 75000 }
+  { id: 'first', icon: '{i:target}', name: 'First Blood', desc: 'Complete your first contract', stat: 'contracts', goal: 1, cash: 5000 },
+  { id: 'sa1', icon: '{i:ghost}', name: 'Ghost', desc: 'Earn Silent Assassin', stat: 'sa', goal: 1, cash: 8000 },
+  { id: 's1', icon: '{i:star}', name: 'Professional', desc: 'Earn an S rank', stat: 's', goal: 1, cash: 10000 },
+  { id: 's10', icon: '{i:star}', name: 'Legend', desc: 'Earn 10 S ranks', stat: 's', goal: 10, cash: 50000 },
+  { id: 'c5', icon: '{i:plane}', name: 'Globetrotter', desc: 'Complete contracts in 5 cities', stat: 'cities', goal: 5, cash: 15000 },
+  { id: 'c15', icon: '{i:globe}', name: 'World Tour', desc: 'Complete a contract in all 15 cities', stat: 'cities', goal: 15, cash: 100000 },
+  { id: 'acc10', icon: '{i:slip}', name: 'Unlucky Coincidences', desc: 'Kill 10 people by accident', stat: 'accident', goal: 10, cash: 20000 },
+  { id: 'poi10', icon: '{i:flask}', name: 'Sommelier', desc: 'Poison 10 people', stat: 'poison', goal: 10, cash: 20000 },
+  { id: 'wire10', icon: '{i:wire}', name: 'Piano Man', desc: '10 Fiber Wire kills', stat: 'wire', goal: 10, cash: 20000 },
+  { id: 'gun10', icon: '{i:gun}', name: 'Marksman', desc: '10 pistol kills', stat: 'pistol', goal: 10, cash: 15000 },
+  { id: 'chand', icon: '{i:bulb}', name: 'Lights Out', desc: 'Drop a chandelier on a target', stat: 'v_chandelier', goal: 1, cash: 10000 },
+  { id: 'push', icon: '{i:push}', name: 'Gravity Wins', desc: 'Push a target off a balcony', stat: 'v_push', goal: 1, cash: 10000 },
+  { id: 'sauna', icon: '{i:fire}', name: 'Steam Cleaned', desc: 'Cook a target in the sauna', stat: 'v_sauna', goal: 1, cash: 10000 },
+  { id: 'pool', icon: '{i:bolt}', name: 'Shocking', desc: 'Electrocute a target in the pool', stat: 'v_pool', goal: 1, cash: 10000 },
+  { id: 'gas', icon: '{i:burst}', name: 'Gas Leak', desc: 'Blow up a target at the stove', stat: 'v_gas', goal: 1, cash: 10000 },
+  { id: 'disg', icon: '{i:mask}', name: 'Master of Disguise', desc: 'Wear all 5 staff disguises', stat: 'disguises', goal: 5, cash: 20000 },
+  { id: 'hide25', icon: '{i:box}', name: 'Out of Sight', desc: 'Hide 25 bodies', stat: 'hidden', goal: 25, cash: 20000 },
+  { id: 'ko50', icon: '{i:fist}', name: 'Lights Out, Pal', desc: 'Subdue 50 people', stat: 'ko', goal: 50, cash: 20000 },
+  { id: 'coin50', icon: '{i:coin}', name: 'Heads or Tails', desc: 'Throw 50 coins', stat: 'coins', goal: 50, cash: 10000 },
+  { id: 'mil', icon: '{i:money}', name: 'Millionaire', desc: 'Earn $1,000,000 in total', stat: 'earned', goal: 1000000, cash: 50000 },
+  { id: 'suits', icon: '{i:shirt}', name: 'Sharp Dressed', desc: 'Own every suit', stat: 'suits', goal: 10, cash: 25000 },
+  { id: 'vault', icon: '{i:castle}', name: 'Kingpin', desc: 'Fully upgrade your hideout', stat: 'hide', goal: 3, cash: 50000 },
+  { id: 'streak', icon: '{i:calendar}', name: 'Creature of Habit', desc: 'Reach a 7-day login streak', stat: 'streak', goal: 7, cash: 25000 },
+  { id: 'daily10', icon: '{i:check}', name: 'Overachiever', desc: 'Complete 10 daily challenges', stat: 'dailies', goal: 10, cash: 30000 },
+  { id: 'master', icon: '{i:medal}', name: 'Mastered', desc: 'Complete every mastery challenge in one city', stat: 'mastered', goal: 1, cash: 30000 },
+  { id: 'lv10', icon: '{i:medal}', name: 'Veteran', desc: 'Reach Agent Level 10', stat: 'level', goal: 10, cash: 50000 },
+  { id: 'ch3', icon: '{i:book}', name: 'Following the Money', desc: 'Complete 3 campaign chapters', stat: 'campaign', goal: 3, cash: 15000 },
+  { id: 'ch15', icon: '{i:key}', name: 'Ledger Closed', desc: 'Finish the Meridian campaign', stat: 'campaign', goal: 15, cash: 150000 },
+  { id: 'el1', icon: '{i:paw}', name: 'Elusive', desc: 'Eliminate an Elusive Target', stat: 'elusive', goal: 1, cash: 20000 },
+  { id: 'el5', icon: '{i:paw}', name: 'Apex Predator', desc: 'Eliminate 5 Elusive Targets', stat: 'elusive', goal: 5, cash: 75000 },
+  { id: 'sig5', icon: '{i:map}', name: 'Local Flavour', desc: 'Pull off 5 signature kills', stat: 'v_signature', goal: 5, cash: 40000 },
+  { id: 'weekly', icon: '{i:calendar}', name: 'Rule Follower', desc: 'Complete a Weekly Contract with every rule met', stat: 'weeklies', goal: 1, cash: 25000 },
+  { id: 'master', icon: '{i:skull}', name: 'Master Assassin', desc: 'Earn an S rank on Master difficulty', stat: 'masterS', goal: 1, cash: 60000 }
 ];
 
 const Progress = {
@@ -78,6 +82,9 @@ const Progress = {
     const S = Game.S;
     S.prog = Object.assign({ xp: 0, level: 1, tokens: 0, daily: { last: null, streak: 0 }, ch: { date: '', list: [] }, ach: {}, mastery: {}, dailies: 0,
       career: { kills: 0, accident: 0, poison: 0, wire: 0, pistol: 0, melee: 0, explosive: 0, ko: 0, hidden: 0, coins: 0, disguises: {}, cities: {}, via: {}, sa: 0 } }, S.prog || {});
+    S.look.acc = Object.assign({ watch: 'none', square: 'none', pin: 'none', glove: 'black', case: 'none' }, S.look.acc || {});
+    S.unlocked.acc = S.unlocked.acc || [];
+    S.settings.difficulty = S.settings.difficulty || 'pro';
     if (!SUITS.find(s => s.id === 'midnight')) SUITS.push({ id: 'midnight', name: 'Midnight Silk', price: -1, jacket: [0.05, 0.06, 0.14], pants: [0.05, 0.06, 0.14], shirt: [0.06, 0.06, 0.07], exclusive: 1 });
     this.refreshChallenges();
     return S.prog;
@@ -141,7 +148,7 @@ const Progress = {
     // daily challenges
     for (const c of P.ch.list) {
       if (c.done) continue; const t = this.chDef(c);
-      if (t.ev === ev && t.test(d, c)) { c.prog++; if (c.prog >= t.goal) { c.done = true; out.push({ type: 'challenge', text: this.chText(c) }); UI.banner('CHALLENGE COMPLETE', this.chText(c), '✅'); Sfx.play('achieve'); } }
+      if (t.ev === ev && t.test(d, c)) { c.prog++; if (c.prog >= t.goal) { c.done = true; out.push({ type: 'challenge', text: this.chText(c) }); UI.banner('CHALLENGE COMPLETE', this.chText(c), '{i:check}'); Sfx.play('achieve'); } }
     }
     this.checkAch();
     return out;
@@ -179,6 +186,9 @@ const Progress = {
       case 'dailies': return P.dailies;
       case 'level': return P.level;
       case 'campaign': return P.campaign || 0;
+      case 'weeklies': return P.weeklies || 0;
+      case 'masterS': return P.masterS || 0;
+      case 'stars': return CITIES.reduce((a, c, i) => a + this.masteryCount(i), 0);
       case 'elusive': return P.elusiveWins || 0;
       case 'mastered': return CITIES.filter((c, i) => this.masteryCount(i) >= MASTERY.length).length;
       default: if (stat.startsWith('v_')) return C.via[stat.slice(2)] || 0; return C[stat] || 0;
@@ -190,7 +200,7 @@ const Progress = {
       if (P.ach[a.id]) continue;
       if (this.statVal(a.stat) >= a.goal) {
         P.ach[a.id] = { t: Date.now(), claimed: false };
-        UI.banner('ACHIEVEMENT UNLOCKED', a.icon + ' ' + a.name, '🏆'); Sfx.play('achieve');
+        UI.banner('ACHIEVEMENT UNLOCKED', a.icon + ' ' + a.name, '{i:trophy}'); Sfx.play('achieve');
       }
     }
   },

@@ -3,7 +3,7 @@
    SILENT CONTRACT — Game-feel layer: progression menus,
    banners, popups, cinematic overlays, animated results, boot
    ========================================================= */
-const VIA_NAMES = { chandelier: 'Chandelier', push: 'Balcony Push', sauna: 'Sauna', pool: 'Electrocution', gas: 'Gas Explosion', charge: 'Remote Charge' };
+const VIA_NAMES = { chandelier: 'Chandelier', push: 'Balcony Push', sauna: 'Sauna', pool: 'Electrocution', gas: 'Gas Explosion', charge: 'Remote Charge', signature: 'Signature Kill' };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 Object.assign(UI, {
@@ -31,19 +31,19 @@ Object.assign(UI, {
       const claimed = st.can ? i < st.idx : i <= st.idx;
       const today = st.can && i === st.idx;
       const d = el('div', 'day' + (claimed ? ' got' : '') + (today ? ' today' : '') + (i === 6 ? ' big' : ''));
-      const icon = r.suit ? '👔' : r.token ? '🎫' : r.xp ? '⭐' : '💵';
-      d.innerHTML = `<div class="dn">DAY ${i + 1}</div><div class="di">${icon}</div><div class="dl">${r.label}</div>${claimed ? '<div class="dc">✔</div>' : ''}`;
+      const icon = r.suit ? '{i:shirt}' : r.token ? '{i:ticket}' : r.xp ? '{i:star}' : '{i:cash}';
+      d.innerHTML = `<div class="dn">DAY ${i + 1}</div><div class="di">${icon}</div><div class="dl">${r.label}</div>${claimed ? '<div class="dc">{i:check}</div>' : ''}`;
       grid.appendChild(d);
     });
     wrap.appendChild(grid);
-    wrap.appendChild(el('div', 'streak', `🔥 Streak: <b>${st.streak}</b> day${st.streak === 1 ? '' : 's'}`));
+    wrap.appendChild(el('div', 'streak', `{i:fire} Streak: <b>${st.streak}</b> day${st.streak === 1 ? '' : 's'}`));
     let foot = null;
     if (st.can) {
       foot = el('button', 'btn primary big', 'Claim Reward');
       foot.onclick = () => {
         const res = Progress.claimDaily(); if (!res) return;
         Sfx.play('daily'); this.refreshMoney();
-        this.banner('DAILY REWARD', res.r.label, '🎁');
+        this.banner('DAILY REWARD', res.r.label, '{i:gift}');
         for (const u of res.ups) this.levelUp(u);
         this.daily();
         const t = this.sheet.querySelector('.day.got:last-of-type'); if (t) t.classList.add('pop');
@@ -68,9 +68,9 @@ Object.assign(UI, {
       P.ch.list.forEach((c, i) => {
         const t = Progress.chDef(c);
         const d = el('div', 'chal' + (c.done ? ' done' : '') + (c.claimed ? ' claimed' : ''));
-        d.innerHTML = `<div class="ch-t">${Progress.chText(c)}</div><div class="bar"><i style="width:${Math.min(100, c.prog / t.goal * 100)}%"></i><span>${Math.min(c.prog, t.goal)}/${t.goal}</span></div><div class="ch-r">💵 ${money(t.cash)} · ⭐ ${t.xp} XP</div>`;
+        d.innerHTML = `<div class="ch-t">${Progress.chText(c)}</div><div class="bar"><i style="width:${Math.min(100, c.prog / t.goal * 100)}%"></i><span>${Math.min(c.prog, t.goal)}/${t.goal}</span></div><div class="ch-r">{i:cash} ${money(t.cash)} · {i:star} ${t.xp} XP</div>`;
         if (c.done && !c.claimed) { const b = el('button', 'btn sm primary', 'Claim'); b.onclick = () => { const r = Progress.claimChallenge(i); if (r) { Sfx.play('cash'); this.refreshMoney(); r.ups.forEach(u => this.levelUp(u)); this.challenges('daily'); } }; d.appendChild(b); }
-        else if (c.claimed) d.appendChild(el('div', 'ch-ok', '✔'));
+        else if (c.claimed) d.appendChild(el('div', 'ch-ok', '{i:check}'));
         wrap.appendChild(d);
       });
     } else {
@@ -78,7 +78,7 @@ Object.assign(UI, {
       CITIES.forEach((c, i) => {
         const m = Game.S.prog.mastery[c.id] || {}; const n = MASTERY.filter(x => m[x.id]).length;
         const d = el('div', 'mrow2' + (Game.cityUnlocked(i) ? '' : ' locked'));
-        d.innerHTML = `<div class="mr-n"><b>${c.name}</b><span>${n}/${MASTERY.length}</span></div><div class="mr-c">${MASTERY.map(x => `<i class="${m[x.id] ? 'ok' : ''}" title="${x.name}">${m[x.id] ? '★' : '☆'}</i>`).join('')}</div>`;
+        d.innerHTML = `<div class="mr-n"><b>${c.name}</b><span>${n}/${MASTERY.length}</span></div><div class="mr-c">${MASTERY.map(x => `<i class="${m[x.id] ? 'ok' : ''}" title="${x.name}">${m[x.id] ? '{i:star}' : '{i:starO}'}</i>`).join('')}</div>`;
         wrap.appendChild(d);
       });
     }
@@ -94,9 +94,9 @@ Object.assign(UI, {
     for (const a of sorted) {
       const st = P.ach[a.id], v = Math.min(a.goal, Progress.statVal(a.stat));
       const d = el('div', 'ach' + (st ? ' got' : '') + (st && !st.claimed ? ' ready' : ''));
-      d.innerHTML = `<div class="a-ic">${st ? a.icon : '🔒'}</div><div class="a-t"><b>${a.name}</b><span>${a.desc}</span>${!st && a.goal > 1 ? `<div class="bar sm"><i style="width:${v / a.goal * 100}%"></i></div><em>${a.stat === 'earned' ? money(v) + ' / ' + money(a.goal) : v + ' / ' + a.goal}</em>` : ''}</div>`;
+      d.innerHTML = `<div class="a-ic">${st ? a.icon : '{i:lock}'}</div><div class="a-t"><b>${a.name}</b><span>${a.desc}</span>${!st && a.goal > 1 ? `<div class="bar sm"><i style="width:${v / a.goal * 100}%"></i></div><em>${a.stat === 'earned' ? money(v) + ' / ' + money(a.goal) : v + ' / ' + a.goal}</em>` : ''}</div>`;
       if (st && !st.claimed) { const b = el('button', 'btn sm primary', money(a.cash)); b.onclick = () => { const r = Progress.claimAch(a.id); if (r) { Sfx.play('cash'); this.refreshMoney(); r.ups.forEach(u => this.levelUp(u)); this.achievements(); } }; d.appendChild(b); }
-      else if (st) d.appendChild(el('div', 'ch-ok', '✔'));
+      else if (st) d.appendChild(el('div', 'ch-ok', '{i:check}'));
       wrap.appendChild(d);
     }
     this.openSheet('Achievements', wrap, { side: true });
@@ -164,7 +164,7 @@ Object.assign(UI, {
     const w = ms => fast ? Promise.resolve() : sleep(ms);
     r.innerHTML = `<div class="rbox">
       <div class="r-city">${res.city.name} · ${res.city.venue}</div>
-      <div class="r-head ${res.success ? 'good' : 'bad'}">${res.success ? 'CONTRACT COMPLETE' : 'CONTRACT FAILED'}</div>
+      <div class="r-head ${res.success ? 'good' : 'bad'}">${res.mode === 'tutorial' ? (res.success ? 'TRAINING COMPLETE' : 'TRAINING FAILED') : res.success ? 'CONTRACT COMPLETE' : 'CONTRACT FAILED'}</div>
       <div class="r-rank r-${res.rank}" id="rRank"></div>
       <div id="rStats"></div><div class="rlines" id="rLines"></div>
       <div class="r-pay"><span>Payout</span><b id="rPay">$0</b></div>
@@ -175,7 +175,7 @@ Object.assign(UI, {
     $('#rRetry').onclick = e => { e.stopPropagation(); r.classList.add('hidden'); Game.enterHideout(); this.openStation('contracts'); this.briefing(res.C.ci); };
     Sfx.play(res.success ? 'whoosh' : 'fail');
     await w(500);
-    if (res.stats) $('#rStats').innerHTML = `<div class="rstats"><span>⏱ ${fmtTime(res.stats.time)}</span><span>🎯 ${(METHODS.find(m => m.id === res.stats.method) || { name: res.stats.method || '-' }).name}</span><span>👁 ${res.stats.spotted ? 'Spotted' : 'Unseen'}</span><span>⚰ ${res.stats.bodies} found</span><span>👔 ${res.stats.disguises} disguises</span></div>`;
+    if (res.stats) $('#rStats').innerHTML = `<div class="rstats"><span>{i:clock} ${fmtTime(res.stats.time)}</span><span>{i:target} ${(METHODS.find(m => m.id === res.stats.method) || { name: res.stats.method || '-' }).name}</span><span>{i:eye} ${res.stats.spotted ? 'Spotted' : 'Unseen'}</span><span>{i:coffin} ${res.stats.bodies} found</span><span>{i:shirt} ${res.stats.disguises} disguises</span></div>`;
     for (const [n, v] of res.lines) {
       const d = el('div', 'rl in', `<span>${n}</span><b class="${v < 0 ? 'bad' : ''}">${v ? money(v) : ''}</b>`);
       $('#rLines').appendChild(d); Sfx.play('tick'); await w(240);
@@ -187,7 +187,7 @@ Object.assign(UI, {
     await w(300);
     // rank stamp
     const rk = $('#rRank'); rk.textContent = res.rank; rk.classList.add('stamp'); Sfx.play('rank'); Engine.shakeAmt = 0.5;
-    if (res.sa) this.banner('SILENT ASSASSIN', 'Nobody ever knew you were there', '👻');
+    if (res.sa) this.banner('SILENT ASSASSIN', 'Nobody ever knew you were there', '{i:ghost}');
     await w(700);
     // XP
     $('#rXpG').textContent = `+${res.xp} XP`;
@@ -202,8 +202,8 @@ Object.assign(UI, {
     for (const u of res.ups) this.levelUp(u);
     // extras
     const ex = [];
-    if (res.mastery && res.mastery.length) ex.push(`<div class="r-mast">🏅 Mastery: ${res.mastery.map(m => `<span>${m.name}</span>`).join('')}</div>`);
-    if (res.challenges) ex.push(`<div class="r-mast">✅ ${res.challenges} daily challenge${res.challenges > 1 ? 's' : ''} completed — claim in Challenges</div>`);
+    if (res.mastery && res.mastery.length) ex.push(`<div class="r-mast">{i:medal} Mastery: ${res.mastery.map(m => `<span>${m.name}</span>`).join('')}</div>`);
+    if (res.challenges) ex.push(`<div class="r-mast">{i:check} ${res.challenges} daily challenge${res.challenges > 1 ? 's' : ''} completed — claim in Challenges</div>`);
     $('#rExtra').innerHTML = ex.join('');
     $('#rBtns').style.visibility = 'visible';
   }
@@ -222,11 +222,11 @@ Object.assign(UI, {
 /* =========================================================
    Boot
    ========================================================= */
-(function boot() {
+document.addEventListener('DOMContentLoaded', function boot() {
   const cv = $('#gl');
   try { Engine.init(cv); } catch (e) { $('#loading').innerHTML = '<div class="err">This game needs WebGL2. Please use an up-to-date browser.<br><small>' + e.message + '</small></div>'; $('#loading').classList.remove('hidden'); return; }
   Game.load(); Progress.ensure();
-  Engine.quality = Game.S.settings.quality;
+  Engine.quality = Game.S.settings.quality; Engine.exposure = Game.S.settings.bright || 1.2;
   Sfx.on.music = Game.S.settings.music !== false; Sfx.on.sfx = Game.S.settings.sfx !== false;
   UI.init(); Input.init(cv);
   Engine.resize();
@@ -236,6 +236,7 @@ Object.assign(UI, {
   $('#loading').classList.add('hidden');
   let last = performance.now();
   const loop = now => {
+    if (Game.S.settings.fps === 30 && now - last < 31) { requestAnimationFrame(loop); return; }
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
     Engine.resize();
     if (!$('#title').classList.contains('hidden')) Engine.cam.yaw += dt * 0.08;
@@ -245,7 +246,7 @@ Object.assign(UI, {
   requestAnimationFrame(loop);
   document.addEventListener('visibilitychange', () => { if (Sfx.ctx) { if (document.hidden) Sfx.ctx.suspend(); else Sfx.ctx.resume(); } if (document.hidden && Game.mode === 'mission' && !Game.paused) UI.pause(); });
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => { });
-})();
+});
 
 /* =========================================================
    Contracts hub: campaign, free contracts, elusive target
@@ -256,15 +257,17 @@ Object.assign(UI, {
     const P = Game.S.prog, wrap = el('div');
     const es = Elusive.state();
     const tabs = el('div', 'tabs');
-    for (const [k, n] of [['campaign', `Campaign ${P.campaign || 0}/15`], ['free', 'Contracts'], ['elusive', 'Elusive' + (es.status === 'open' ? ' •' : '')]]) { const t = el('button', 'tab' + (k === tab ? ' on' : ''), n); t.onclick = () => this.contracts(k); tabs.appendChild(t); }
+    const wk = Weekly.state();
+    for (const [k, n] of [['campaign', `Campaign ${P.campaign || 0}/15`], ['free', 'Contracts'], ['elusive', 'Elusive' + (es.status === 'open' ? ' •' : '')], ['weekly', 'Weekly' + (!wk.done ? ' •' : '')]]) { const t = el('button', 'tab' + (k === tab ? ' on' : ''), n); t.onclick = () => this.contracts(k); tabs.appendChild(t); }
     wrap.appendChild(tabs);
     if (tab === 'campaign') {
+      { const tb = el('button', 'btn sm', Game.S.tutorialDone ? '{i:cap} Replay Training' : '{i:cap} Training Mission (start here)'); tb.style.marginBottom = '10px'; tb.onclick = () => { this.closeSheet(); this.loading(() => Tutorial.start()); }; wrap.appendChild(tb); }
       wrap.appendChild(el('div', 'camp-head', `<b>THE MERIDIAN LEDGER</b><span>A shadow syndicate with eleven council seats and one chairman. Follow the money across fifteen cities.</span>`));
       const list = el('div', 'chapters');
       CAMPAIGN.forEach((ch, i) => {
         const done = i < (P.campaign || 0), cur = i === (P.campaign || 0), lock = i > (P.campaign || 0);
         const d = el('div', 'chap' + (done ? ' done' : '') + (cur ? ' cur' : '') + (lock ? ' locked' : ''));
-        d.innerHTML = `<div class="chn">${String(i + 1).padStart(2, '0')}</div><div class="cht"><b>${lock ? '???' : ch.name}</b><span>${CITIES[ch.ci].name} · ${lock ? 'Classified' : ch.title}</span></div><div class="chs">${done ? '✔' : cur ? '▶' : '🔒'}</div>`;
+        d.innerHTML = `<div class="chn">${String(i + 1).padStart(2, '0')}</div><div class="cht"><b>${lock ? '???' : ch.name}</b><span>${CITIES[ch.ci].name} · ${lock ? 'Classified' : ch.title}</span></div><div class="chs">${done ? '{i:check}' : cur ? '▶' : '{i:lock}'}</div>`;
         if (!lock) d.onclick = () => this.briefing(ch.ci, 0, 'campaign', i);
         list.appendChild(d);
       });
@@ -276,42 +279,65 @@ Object.assign(UI, {
       CITIES.forEach((c, i) => {
         const un = Game.cityUnlocked(i), best = Game.S.best[c.id], mc = Progress.masteryCount(i);
         const d = el('div', 'city' + (un ? '' : ' locked') + ' t-' + c.time);
-        d.innerHTML = `<div class="city-n">${String(i + 1).padStart(2, '0')} · ${resolveLayout(c).name}</div><div class="city-name">${c.name}</div><div class="city-v">${un ? c.venue : 'Locked — complete ' + CITIES[i - 1].name}</div>${un ? `<div class="stars">${'★'.repeat(mc)}<i>${'★'.repeat(MASTERY.length - mc)}</i></div>` : ''}${best ? `<div class="rank r-${best}">${best}</div>` : ''}`;
+        d.innerHTML = `<div class="city-n">${String(i + 1).padStart(2, '0')} · ${resolveLayout(c).name}</div><div class="city-name">${c.name}</div><div class="city-v">${un ? c.venue : 'Locked — complete ' + CITIES[i - 1].name}</div>${un ? `<div class="stars">${'{i:star}'.repeat(mc)}<i>${'{i:star}'.repeat(MASTERY.length - mc)}</i></div>` : ''}${best ? `<div class="rank r-${best}">${best}</div>` : ''}`;
         if (un) d.onclick = () => this.briefing(i, 0, 'free');
         grid.appendChild(d);
       });
       wrap.appendChild(grid);
+    } else if (tab === 'weekly') {
+      const C = Game.getContract(wk.ci, 'weekly');
+      const card = el('div', 'elusive weekly' + (wk.done ? ' done' : ''));
+      const cv = el('canvas', 'portrait'); cv.width = 96; cv.height = 96; drawPortrait(cv, C.looks, C.outfit); card.appendChild(cv);
+      card.appendChild(el('div', 'el-i', `<div class="el-tag">WEEKLY CONTRACT</div><div class="b-name">${C.name}</div><div class="b-venue">${CITIES[wk.ci].name} · ${CITIES[wk.ci].venue}</div><div class="el-t">{i:clock} Resets in ${Weekly.timeLeft()}</div>`));
+      wrap.appendChild(card);
+      wrap.appendChild(el('div', 'sec', 'Rules'));
+      wrap.appendChild(el('div', 'rules', wk.rules.map(id => `<div>• ${WEEKLY_RULES.find(r => r.id === id).text}</div>`).join('')));
+      wrap.appendChild(el('p', 'hint', `Meet every rule to earn a ${money(60000)} bonus (once per week). Unlimited attempts.`));
+      if (wk.done) wrap.appendChild(el('div', 'el-done done', '{i:check} COMPLETED THIS WEEK — replay for fun'));
+      const b = el('button', 'btn primary big', wk.done ? 'Replay' : 'Accept Contract'); b.style.width = '100%'; b.onclick = () => this.briefing(wk.ci, 0, 'weekly'); wrap.appendChild(b);
     } else {
       const C = Game.getContract(es.ci, 'elusive');
       const card = el('div', 'elusive ' + es.status);
       const cv = el('canvas', 'portrait'); cv.width = 96; cv.height = 96; drawPortrait(cv, C.looks, C.outfit);
       card.appendChild(cv);
-      card.appendChild(el('div', 'el-i', `<div class="el-tag">ELUSIVE TARGET</div><div class="b-name">${C.name}</div><div class="b-title">${C.title.replace('Elusive Target · ', '')}</div><div class="b-venue">${CITIES[es.ci].name} · ${CITIES[es.ci].venue}</div><div class="el-t">⏳ Gone in ${Elusive.timeLeft()}</div>`));
+      card.appendChild(el('div', 'el-i', `<div class="el-tag">ELUSIVE TARGET</div><div class="b-name">${C.name}</div><div class="b-title">${C.title.replace('Elusive Target · ', '')}</div><div class="b-venue">${CITIES[es.ci].name} · ${CITIES[es.ci].venue}</div><div class="el-t">{i:clock} Gone in ${Elusive.timeLeft()}</div>`));
       wrap.appendChild(card);
       wrap.appendChild(el('p', 'hint', `One attempt only. If you die, abort or fail, the target disappears until tomorrow. Always guarded, no full guidance. Pays ${money(C.fee)} and +1,500 XP.`));
       if (es.status === 'open') { const b = el('button', 'btn primary big', 'Accept Contract'); b.style.width = '100%'; b.onclick = () => this.briefing(es.ci, 0, 'elusive'); wrap.appendChild(b); }
-      else wrap.appendChild(el('div', 'el-done ' + es.status, es.status === 'done' ? '✔ TARGET ELIMINATED — new target tomorrow' : '✕ TARGET ESCAPED — new target tomorrow'));
+      else wrap.appendChild(el('div', 'el-done ' + es.status, es.status === 'done' ? '{i:check} TARGET ELIMINATED — new target tomorrow' : '{i:x} TARGET ESCAPED — new target tomorrow'));
     }
     this.openSheet('Contracts', wrap, { wide: true });
   },
   briefing(ci, intel, mode, chapter, start) {
     mode = mode || 'free'; intel = intel || 0; start = start || 'street';
+    const diff = Game.S.settings.difficulty || 'pro';
+    if (diff === 'master' && intel === 2) intel = 0;
     const C = Game.getContract(ci, mode, chapter); ci = C.ci;
     const city = CITIES[ci], S = Game.S;
     const again = (i, st) => this.briefing(ci, i === undefined ? intel : i, mode, chapter, st || start);
     const wrap = el('div', 'brief');
     if (mode === 'campaign') wrap.appendChild(el('div', 'chap-tag', `CHAPTER ${chapter + 1} / ${CAMPAIGN.length}`));
     if (mode === 'elusive') wrap.appendChild(el('div', 'chap-tag el', 'ELUSIVE TARGET · ONE ATTEMPT'));
+    if (mode === 'weekly') wrap.appendChild(el('div', 'chap-tag el', 'WEEKLY CONTRACT'));
+    if (C.second) wrap.appendChild(el('div', 'chap-tag', 'DOUBLE CONTRACT · 2 TARGETS · +60% FEE'));
     const top = el('div', 'b-top');
     const cv = el('canvas', 'portrait'); cv.width = 96; cv.height = 96; drawPortrait(cv, C.looks, C.outfit);
     top.appendChild(cv);
     const LYb = resolveLayout(city);
     top.appendChild(el('div', 'b-info', `<div class="b-city">${city.name}, ${city.country} · ${city.time} · ${LYb.name}, ${LYb.floors.length} floors</div><div class="b-name">${C.name}</div><div class="b-title">${C.title}</div><div class="b-venue">${city.venue}</div>`));
     wrap.appendChild(top);
-    if (C.story) wrap.appendChild(el('div', 'handler', `<div class="h-av">📡</div><div><b>${HANDLER}</b><p>${C.story.brief}</p></div>`));
+    if (C.story) wrap.appendChild(el('div', 'handler', `<div class="h-av">{i:antenna}</div><div><b>${HANDLER}</b><p>${C.story.brief}</p></div>`));
     else wrap.appendChild(el('p', 'b-blurb', city.blurb));
-    wrap.appendChild(el('p', 'b-blurb', `The target is wearing ${describeLooks(C.looks, C.outfit)}.${C.bodyguard ? ' Travels with a bodyguard.' : ''}`));
-    { const m = Progress.mastery(ci); wrap.appendChild(el('div', 'mast', MASTERY.map(x => `<span class="${m[x.id] ? 'ok' : ''}">${m[x.id] ? '✔' : '○'} ${x.name}</span>`).join(''))); }
+    wrap.appendChild(el('p', 'b-blurb', `The target is wearing ${describeLooks(C.looks, C.outfit)}.${C.bodyguard ? ' Travels with a bodyguard.' : ''} If the target is alarmed, they will run for an exit, and if they escape, the contract fails.`));
+    if (C.second) { const t2 = el('div', 'b-top'); const c2 = el('canvas', 'portrait'); c2.width = 96; c2.height = 96; drawPortrait(c2, C.second.looks, C.second.outfit); t2.appendChild(c2); t2.appendChild(el('div', 'b-info', `<div class="b-city">Second target</div><div class="b-name">${C.second.name}</div><div class="b-title">${C.second.title}</div><div class="b-venue">Wearing ${describeLooks(C.second.looks, C.second.outfit)}.</div>`)); wrap.appendChild(t2); }
+    if (mode === 'weekly' && C.rules) { wrap.appendChild(el('div', 'sec', 'Weekly Rules')); wrap.appendChild(el('div', 'rules', C.rules.map(id => `<div>• ${WEEKLY_RULES.find(r => r.id === id).text}</div>`).join(''))); }
+    { const SG = SIGNATURES[city.id]; if (SG) wrap.appendChild(el('p', 'hint', `{i:map} Signature kill here: <b>${SG.name}</b> — ${SG.label.toLowerCase()}.`)); }
+    // difficulty
+    wrap.appendChild(el('div', 'sec', 'Difficulty'));
+    const dl = el('div', 'starts');
+    for (const k of (mode === 'tutorial' ? [] : ['casual', 'pro', 'master'])) { const D = DIFFS[k]; const b = el('div', 'start' + (diff === k ? ' on' : ''), `<div class="st-i">${k === 'casual' ? '{i:smile}' : k === 'pro' ? '{i:target}' : '{i:skull}'}</div><b>${D.name}</b><span>${D.desc}</span>`); b.onclick = () => { Game.S.settings.difficulty = k; Game.save(); again(); }; dl.appendChild(b); }
+    wrap.appendChild(dl);
+    { const m = Progress.mastery(ci); wrap.appendChild(el('div', 'mast', MASTERY.map(x => `<span class="${m[x.id] ? 'ok' : ''}">${m[x.id] ? '{i:check}' : '○'} ${x.name}</span>`).join(''))); }
     const mth = METHODS.find(x => x.id === C.method);
     wrap.appendChild(el('div', 'b-grid', `<div><span>Fee</span><b>${money(C.fee)}</b></div><div><span>Preferred kill</span><b>${mth.name}${C.method !== 'any' ? ' (+30%)' : ''}</b></div><div><span>Silent Assassin</span><b>+40%</b></div><div><span>Suit Only</span><b>+15%</b></div>`));
     // starting location
@@ -320,7 +346,7 @@ Object.assign(UI, {
     const sl = el('div', 'starts');
     for (const s of STARTS) {
       const ok = mc >= s.req;
-      const b = el('div', 'start' + (start === s.id ? ' on' : '') + (ok ? '' : ' locked'), `<div class="st-i">${ok ? s.icon : '🔒'}</div><b>${s.name}</b><span>${ok ? s.desc : `Needs ${s.req}★ mastery here`}</span>`);
+      const b = el('div', 'start' + (start === s.id ? ' on' : '') + (ok ? '' : ' locked'), `<div class="st-i">${ok ? s.icon : '{i:lock}'}</div><b>${s.name}</b><span>${ok ? s.desc : `Needs ${s.req}{i:star} mastery here`}</span>`);
       if (ok) b.onclick = () => again(intel, s.id);
       sl.appendChild(b);
     }
@@ -328,11 +354,11 @@ Object.assign(UI, {
     // intel
     const it = el('div', 'intel'); it.appendChild(el('div', 'sec', 'Handler Guidance'));
     const opts = [[0, 'Go in blind', 'Target only marked when you see them.'], [1, 'Target Intel', 'Target tracked at all times + their schedule.']];
-    if (mode !== 'elusive') opts.push([2, 'Full Guidance', 'Everything above + step-by-step kill opportunities and item markers.']);
+    if (mode !== 'elusive' && diff !== 'master') opts.push([2, 'Full Guidance', 'Everything above + step-by-step kill opportunities and item markers.']);
     for (const [t, n, d] of opts) {
       const tok = t && S.prog.tokens > 0, price = t && !tok ? Game.intelPrice(t) : 0;
       const b = el('div', 'opt' + (intel === t ? ' on' : ''));
-      b.innerHTML = `<b>${n}</b><span>${d}</span><em>${tok ? '🎫 Token' : price ? money(price) : 'Free'}</em>`;
+      b.innerHTML = `<b>${n}</b><span>${d}</span><em>${tok ? '{i:ticket} Token' : price ? money(price) : 'Free'}</em>`;
       b.onclick = () => { if (price > S.money) { this.toast('Not enough money', 'bad'); return; } again(t); };
       it.appendChild(b);
     }
@@ -345,11 +371,11 @@ Object.assign(UI, {
     const b1 = el('button', 'btn sm', 'Change weapon'); b1.onclick = () => { this.armory(); this.backTo = () => again(); this.addBack(); };
     const b2 = el('button', 'btn sm', 'Change gear'); b2.onclick = () => { this.gear(); this.backTo = () => again(); this.addBack(); };
     lb.append(b1, b2);
-    if (mode === 'free') { const b3 = el('button', 'btn sm', '🎲 New contract'); b3.onclick = () => { Game.rerollContract(ci); again(); }; lb.appendChild(b3); }
+    if (mode === 'free') { const b3 = el('button', 'btn sm', '{i:dice} New contract'); b3.onclick = () => { Game.rerollContract(ci); again(); }; lb.appendChild(b3); }
     lo.appendChild(lb); wrap.appendChild(lo);
     const foot = el('div', 'foot2');
     const back = el('button', 'btn', 'Back'); back.onclick = () => this.contracts();
-    const go = el('button', 'btn primary', `Start Mission${intel ? ' · ' + (S.prog.tokens > 0 ? '🎫' : money(Game.intelPrice(intel))) : ''}`);
+    const go = el('button', 'btn primary', `Start Mission${intel ? ' · ' + (S.prog.tokens > 0 ? '{i:ticket}' : money(Game.intelPrice(intel))) : ''}`);
     go.onclick = () => { this.closeSheet(); this.loading(() => Game.startMission(ci, intel, { mode, chapter, start })); };
     foot.append(back, go);
     this.openSheet(mode === 'campaign' ? 'Campaign Briefing' : mode === 'elusive' ? 'Elusive Briefing' : 'Briefing', wrap, { wide: true, foot });
@@ -361,9 +387,11 @@ Object.assign(UI, {
   UI.showResult = async function (res) {
     await orig.call(this, res);
     const C = res.C;
-    if (res.story) $('#rExtra').insertAdjacentHTML('beforeend', `<div class="handler"><div class="h-av">📡</div><div><b>${HANDLER}</b><p>${res.story.debrief}</p></div></div>`);
+    if (res.story) $('#rExtra').insertAdjacentHTML('beforeend', `<div class="handler"><div class="h-av">{i:antenna}</div><div><b>${HANDLER}</b><p>${res.story.debrief}</p></div></div>`);
     const rt = $('#rRetry');
-    if (C.mode === 'elusive') rt.style.display = 'none';
+    if (C.mode === 'tutorial') { rt.textContent = res.success ? 'Play Again' : 'Retry Training'; rt.onclick = e => { e.stopPropagation(); $('#result').classList.add('hidden'); this.loading(() => Tutorial.start()); }; if (res.success) $('#rExtra').insertAdjacentHTML('beforeend', `<div class="handler"><div class="h-av">{i:antenna}</div><div><b>${HANDLER}</b><p>Nicely done. You're ready for real work. Open PLAY and start the Meridian campaign.</p></div></div>`); }
+    else if (C.mode === 'elusive') rt.style.display = 'none';
+    else if (C.mode === 'weekly') { rt.textContent = 'Retry Weekly'; rt.onclick = e => { e.stopPropagation(); $('#result').classList.add('hidden'); Game.enterHideout(); this._ctab = 'weekly'; this.briefing(C.ci, 0, 'weekly'); }; }
     else if (C.mode === 'campaign') {
       const next = res.success && C.chapter + 1 < CAMPAIGN.length;
       rt.textContent = next ? 'Next Chapter' : res.success ? 'Replay Chapter' : 'Retry';
@@ -373,3 +401,32 @@ Object.assign(UI, {
     }
   };
 })();
+
+/* ---------- instinct overlay & save transfer ---------- */
+Object.assign(UI, {
+  setInstinct(on) { $('#instfx').classList.toggle('hidden', !on); $('#btnInst').classList.toggle('on', on); },
+  saveTransfer() {
+    const code = btoa(unescape(encodeURIComponent(JSON.stringify(Game.S))));
+    const wrap = el('div', 'pmenu');
+    wrap.appendChild(el('p', 'hint', 'Copy this code somewhere safe (notes app, email to yourself). Paste it back on any device to restore your progress.'));
+    const ta = el('textarea', 'savecode'); ta.readOnly = true; ta.value = code; wrap.appendChild(ta);
+    const cp = el('button', 'btn primary', '{i:list} Copy save code'); cp.onclick = () => { ta.select(); (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject()).then(() => this.toast('Save code copied', 'good')).catch(() => { document.execCommand && document.execCommand('copy'); this.toast('Select and copy the code above'); }); };
+    const dl = el('button', 'btn', '{i:down} Download save file'); dl.onclick = () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(Game.S)], { type: 'application/json' })); a.download = 'silent-contract-save.json'; document.body.appendChild(a); a.click(); a.remove(); };
+    wrap.append(cp, dl);
+    wrap.appendChild(el('div', 'sec', 'Restore'));
+    const ib = el('textarea', 'savecode'); ib.placeholder = 'Paste a save code here'; ib.readOnly = false; ib.style.userSelect = 'text'; wrap.appendChild(ib);
+    const ld = el('button', 'btn', 'Load from code'); ld.onclick = () => this.importSave(ib.value.trim());
+    const fi = el('input'); fi.type = 'file'; fi.accept = '.json,application/json'; fi.style.display = 'none';
+    fi.onchange = () => { const f = fi.files[0]; if (!f) return; f.text().then(t => this.importSave(t, true)); };
+    const fl = el('button', 'btn', '{i:folder} Load save file'); fl.onclick = () => fi.click();
+    wrap.append(ld, fl, fi);
+    this.openSheet('Save Transfer', wrap, { money: false });
+  },
+  importSave(txt, raw) {
+    try {
+      const json = raw ? txt : decodeURIComponent(escape(atob(txt)));
+      const s = JSON.parse(json); if (!s || s.v !== 1 || typeof s.money !== 'number') throw 0;
+      this.confirm('Replace your current progress with this save?', () => { Game.S = Object.assign(Game.newSave(), s); Progress.ensure(); Game.save(); this.closeSheet(); Game.enterHideout(); this.showHideout(); this.toast('Save restored', 'good'); });
+    } catch (e) { this.toast('That save code is not valid', 'bad'); }
+  }
+});

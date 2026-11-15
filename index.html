@@ -307,6 +307,132 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;ba
 .start{background:#1b1d22;padding:9px;cursor:pointer;border:1px solid transparent;clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%)}
 .start .st-i{font-size:22px}.start b{display:block;font-size:13px;margin-top:2px}.start span{font-size:10px;color:var(--dim)}
 .start.on{border-color:var(--red2);background:#2a1217}.start.locked{opacity:.45;cursor:default}
+
+#tut{position:fixed;left:50%;bottom:calc(84px + var(--sb));transform:translateX(-50%);z-index:12;width:min(440px,92vw);background:linear-gradient(160deg,rgba(28,30,37,.97),rgba(12,13,16,.97));padding:12px 14px;box-shadow:inset 0 3px 0 var(--gold);clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%)}
+#tut.pop{animation:tutIn .35s cubic-bezier(.2,1.4,.4,1)}@keyframes tutIn{from{opacity:0;transform:translate(-50%,20px)}}
+.tu-h{display:flex;justify-content:space-between;align-items:center;font-family:var(--hf);letter-spacing:.14em;color:var(--gold);font-size:15px;margin-bottom:6px}
+.tu-skip{font-size:11px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase}
+.tu-x{font-size:14px;line-height:1.45}.tu-x b{color:var(--gold)}
+.tu-next{margin-top:10px}
+@media (orientation:portrait){#tut{bottom:calc(150px + var(--sb))}}
+
+#instfx{position:fixed;inset:0;pointer-events:none;z-index:3;background:radial-gradient(ellipse at center,rgba(40,70,120,.05) 30%,rgba(10,20,45,.6));box-shadow:inset 0 0 0 3px rgba(120,170,255,.25)}
+#btnInst{position:relative}#btnInst.on{background:#2a4a8a}.rb .im{position:absolute;left:8px;right:8px;bottom:5px;height:3px;background:#333}.rb .im b{display:block;height:100%;background:#7ab0ff;width:100%}
+.aware.blend{background:rgba(230,230,255,.9);color:#111;padding:0 14px}
+.rules{background:#14161b;padding:10px 12px;font-size:13px;line-height:1.7;border-left:3px solid var(--gold)}.rules .bad{color:var(--bad);text-decoration:line-through}
+.elusive.weekly{background:linear-gradient(135deg,#102a2d,#14151a)}.elusive.weekly .el-tag{color:#5fe0e6}
+.savecode{width:100%;height:84px;background:#0d0e11;color:#bbb;border:1px solid var(--line);font:11px monospace;padding:8px;resize:none;user-select:text;-webkit-user-select:text}
+.dotc{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+
+.ico{width:1.15em;height:1.15em;vertical-align:-.2em;display:inline-block;flex:none}
+.dock button b .ico,.sb b .ico{width:24px;height:24px}
+.rb .ico{width:22px;height:22px}
+.slot .ic .ico{width:26px;height:26px}
+.ctx-b span .ico{width:20px;height:20px;vertical-align:-4px}
+.li-ic .ico,.a-ic .ico{width:30px;height:30px}
+.day .di .ico{width:32px;height:32px}
+.bn-i .ico{width:30px;height:30px;color:var(--gold)}
+.st-i .ico{width:22px;height:22px}
+.handler .h-av .ico{width:26px;height:26px;color:var(--red2)}
+.stars .ico{width:13px;height:13px}.mr-c .ico{width:16px;height:16px}
+.rank .ico{width:18px;height:18px}
+.ach.got .a-ic{color:var(--gold)}
+
+/* ---------- sniper scope ---------- */
+#shud{position:fixed;inset:0;z-index:6;pointer-events:none}
+#shud button{pointer-events:auto}
+#shud .scope{position:fixed;inset:0;pointer-events:none}
+#shud .sc-ring{position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 0 46vmin,rgba(0,0,0,.55) 47vmin,rgba(0,0,0,.8) 70vmin);transition:background .25s}
+#shud.zoomed .sc-ring{background:radial-gradient(circle at 50% 50%,transparent 0 40vmin,#000 40.6vmin)}
+#shud .sc-h,#shud .sc-v{position:absolute;background:rgba(10,10,10,.85);box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+#shud .sc-h{left:calc(50% - 40vmin);right:calc(50% - 40vmin);top:50%;height:2px;margin-top:-1px;background:linear-gradient(90deg,#111 0 44%,transparent 44% 56%,#111 56%)}
+#shud .sc-v{top:calc(50% - 40vmin);bottom:calc(50% - 40vmin);left:50%;width:2px;margin-left:-1px;background:linear-gradient(180deg,#111 0 44%,transparent 44% 56%,#111 56%)}
+#shud .sc-dot{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:var(--red2);box-shadow:0 0 8px var(--red2)}
+#shud .sc-z{position:absolute;left:50%;top:calc(50% + 12vmin);transform:translateX(-50%);font-family:var(--hf);font-weight:700;letter-spacing:.12em;font-size:13px;color:#fff;text-shadow:0 1px 3px #000}
+#sMuzzle{position:fixed;inset:0;background:radial-gradient(circle at 50% 70%,rgba(255,220,150,.35),transparent 60%);opacity:0;pointer-events:none}
+#sMuzzle.go{animation:muz .18s ease-out}
+@keyframes muz{0%{opacity:1}100%{opacity:0}}
+#shud .s-top{position:fixed;top:calc(8px + var(--st));left:calc(8px + var(--sl));right:calc(8px + var(--sr));display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+#sTargets{display:flex;flex-direction:column;gap:4px}
+#sTargets .st{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--red);padding:5px 10px;font-weight:800;font-size:12px;letter-spacing:.04em;text-transform:uppercase;font-family:var(--hf)}
+#sTargets .st.dead{opacity:.5;border-left-color:var(--good);text-decoration:line-through}
+#sTargets .st.run{border-left-color:var(--gold);animation:blink .5s infinite alternate}
+#shud .s-time{background:var(--panel);border:1px solid var(--line);padding:6px 12px;font-weight:800;font-family:var(--hf);letter-spacing:.08em}
+#shud .s-left{position:fixed;left:calc(8px + var(--sl));bottom:calc(10px + var(--sb));display:flex;flex-direction:column;gap:8px;align-items:center}
+#shud .s-right{position:fixed;right:calc(8px + var(--sr));bottom:calc(10px + var(--sb));display:flex;flex-direction:column;gap:8px;align-items:center}
+#sFloor{font-family:var(--hf);font-weight:700;font-size:11px;letter-spacing:.1em;background:var(--red);padding:3px 8px}
+#sFire{width:96px;height:96px;border-radius:50%;background:linear-gradient(180deg,#e2163a,#a50d27);border:2px solid var(--red2);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(200,16,46,.55);font-family:var(--hf)}
+#sFire b{font-size:20px;letter-spacing:.12em}#sFire small{font-size:10px;font-weight:800;letter-spacing:.06em}#sFire .ico{width:26px;height:26px}
+#sFire.wait{filter:grayscale(.8) brightness(.7)}#sFire:active{transform:scale(.93)}
+#shud .rb{position:relative}#shud .rb .im{position:absolute;left:10px;right:10px;bottom:6px;height:3px;background:rgba(255,255,255,.15)}#shud .rb .im b{display:block;height:100%;background:var(--gold)}
+@media (orientation:landscape){#shud .s-right{flex-direction:column}}
+/* ---------- replay ---------- */
+#rphud{position:fixed;inset:0;z-index:6;pointer-events:none}
+#rphud>*{pointer-events:auto}
+#rphud .rp-top{position:fixed;top:calc(8px + var(--st));left:calc(8px + var(--sl));right:calc(8px + var(--sr));display:flex;justify-content:space-between;align-items:center}
+#rphud .rp-t{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--red);padding:8px 12px;font-family:var(--hf);font-weight:700;letter-spacing:.12em}
+#rpInfo{color:var(--dim);font-weight:600;letter-spacing:.04em;margin-left:8px;font-size:12px}
+#rpEv{position:fixed;top:30%;left:50%;transform:translateX(-50%);font-family:var(--hf);font-weight:700;font-size:20px;letter-spacing:.12em;text-transform:uppercase;padding:8px 18px;background:rgba(0,0,0,.6);opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+#rpEv.show{opacity:1}#rpEv.kill{color:var(--red2)}#rpEv.spot,#rpEv.body{color:var(--gold)}#rpEv.disg{color:#7dd3fc}
+#rphud .rp-bar{position:fixed;left:calc(10px + var(--sl));right:calc(10px + var(--sr));bottom:calc(10px + var(--sb));display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);padding:8px 12px}
+#rpPlay,#rpSpd{width:44px;height:40px;background:#24262d;border:1px solid var(--line);font-weight:800;font-family:var(--hf)}
+#rpTime{font-family:var(--hf);font-weight:700;font-size:13px;white-space:nowrap}
+.rp-track{flex:1;height:26px;position:relative;cursor:pointer;touch-action:none}
+.rp-track::before{content:"";position:absolute;left:0;right:0;top:11px;height:4px;background:rgba(255,255,255,.12)}
+#rpFill{position:absolute;left:0;top:11px;height:4px;background:var(--red)}
+#rpTicks .tk{position:absolute;top:5px;width:3px;height:16px;margin-left:-1px;background:#fff}
+#rpTicks .tk.kill{background:var(--red2)}#rpTicks .tk.spot,#rpTicks .tk.body{background:var(--gold)}#rpTicks .tk.disg{background:#7dd3fc}
+/* ---------- cutscenes ---------- */
+#cine{position:fixed;inset:0;z-index:25;pointer-events:none}
+#cine.out{opacity:0;transition:opacity .4s}
+#cine .cn-bar{position:absolute;left:0;right:0;height:11vh;background:#000;animation:cnbar .6s ease-out}
+#cine .cn-bar.top{top:0}#cine .cn-bar.bot{bottom:0}
+@keyframes cnbar{from{height:0}}
+#cine .cn-title{position:absolute;left:0;right:0;top:38%;text-align:center;opacity:0}
+#cine .cn-title.go{animation:cntit 2.8s ease-out forwards}
+#cine .cn-title b{display:block;font-family:var(--hf);font-size:clamp(34px,7vw,64px);letter-spacing:.2em;text-shadow:0 2px 20px #000}
+#cine .cn-title span{display:inline-block;margin-top:6px;font-family:var(--hf);letter-spacing:.18em;color:var(--red2);background:rgba(0,0,0,.55);padding:4px 12px}
+@keyframes cntit{0%{opacity:0;transform:translateY(10px)}15%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0}}
+#cine .cn-cap{position:absolute;left:50%;bottom:calc(11vh + 12px);transform:translateX(-50%);width:min(760px,94vw);display:flex;gap:12px;align-items:center;background:rgba(10,11,14,.88);border:1px solid var(--line);border-left:4px solid var(--red);padding:10px 14px;animation:cncap .35s ease-out}
+#cine .cn-cap.agent{border-left-color:#7dd3fc}
+@keyframes cncap{from{opacity:0;transform:translate(-50%,8px)}}
+#cnP{width:56px;height:56px;image-rendering:pixelated;border:2px solid var(--red);flex:none}
+#cine .cn-cap.agent #cnP{border-color:#7dd3fc}
+.cn-tx{flex:1;min-width:0}.cn-who{font-family:var(--hf);font-weight:700;font-size:12px;letter-spacing:.14em;color:var(--red2)}
+#cine .cn-cap.agent .cn-who{color:#7dd3fc}
+.cn-line{font-size:15px;line-height:1.45;min-height:2.9em}
+.cn-next{font-family:var(--hf);font-size:10px;letter-spacing:.14em;color:var(--dim);animation:blink .8s infinite alternate}
+#cine .cn-skip{position:absolute;top:calc(11vh + 10px);right:calc(12px + var(--sr));pointer-events:auto;background:rgba(0,0,0,.6);border:1px solid var(--line);padding:8px 14px;font-family:var(--hf);font-weight:700;letter-spacing:.12em;font-size:13px}
+.cut-row{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+/* ---------- records, trophies, pets, sniper menus ---------- */
+.rec-tot{background:#14161b;border-left:4px solid var(--gold);padding:12px 14px;margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+.rec-tot span{font-family:var(--hf);font-weight:700;letter-spacing:.12em;font-size:12px;color:var(--dim)}.rec-tot b{font-family:var(--hf);font-size:26px;color:var(--gold);grid-row:1/3;grid-column:2}.rec-tot small{color:var(--dim);font-size:11px}
+.rec-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.rec-row{display:flex;align-items:center;gap:10px;background:#1b1d22;border:1px solid var(--line);padding:9px 12px;cursor:pointer}
+.rec-row.empty{opacity:.5;cursor:default}
+.rr-n{font-family:var(--hf);font-weight:700;color:var(--dim);width:30px}.rr-c{flex:1;min-width:0}.rr-c b{display:block;font-size:14px}.rr-c span{font-size:11px;color:var(--dim)}
+.rr-s{font-family:var(--hf);font-weight:700;font-size:16px;min-width:70px;text-align:right}.rr-s.dim{color:var(--dim)}.rr-r{color:var(--red2)}
+.rank.sm{position:static;font-size:18px;width:24px;text-align:center}
+.r-rec{display:flex;justify-content:space-between;align-items:center;background:#14161b;border-left:3px solid var(--gold);padding:8px 12px;margin-top:8px;font-size:14px}
+.r-rec b{font-family:var(--hf);font-size:18px;margin-left:6px}.r-rec em{font-style:normal;font-family:var(--hf);letter-spacing:.1em;font-size:12px;color:var(--dim)}
+.r-rec.best em{color:var(--gold);animation:blink .6s infinite alternate}
+.troph{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.tro{position:relative;background:#1b1d22;border:1px solid var(--line);border-bottom:3px solid #555;padding:10px;display:flex;flex-direction:column;gap:2px}
+.tro b{font-size:13px;padding-right:22px}.tro span{font-family:var(--hf);letter-spacing:.1em;font-size:11px;color:var(--red2);text-transform:uppercase}.tro small{font-size:11px;color:var(--dim)}
+.tro .rank{position:absolute;top:8px;right:8px}
+.tro.r-S{border-bottom-color:var(--gold)}.tro.r-A{border-bottom-color:#cfd3da}.tro.r-B,.tro.r-C{border-bottom-color:#b8733d}.tro.locked{opacity:.45}
+.tro.r-S,.tro.r-A,.tro.r-B,.tro.r-C,.tro.r-D,.tro.r-F{color:var(--txt)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:10px}
+.item{background:#1b1d22;border:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:4px}
+.item.on{border-color:var(--red2);background:#2a1217}
+.it-i .ico{width:28px;height:28px;color:var(--red2)}.it-n{font-weight:800;font-size:14px}.it-d{font-size:11px;color:var(--dim);line-height:1.4;flex:1}
+.pet-card{display:flex;align-items:center;gap:12px;background:#14161b;border-left:4px solid var(--red);padding:10px 12px;margin-bottom:10px}
+.pet-card>div:nth-child(2){flex:1}.pet-card b{display:block;font-family:var(--hf);font-size:20px;letter-spacing:.08em}.pet-card span{font-size:12px;color:var(--dim)}
+.pc-i .ico{width:34px;height:34px;color:var(--red2)}
+.sn-tg{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.sn-t{flex:1;min-width:150px;display:flex;gap:8px;align-items:center;background:#1b1d22;border:1px solid var(--line);padding:8px}
+.sn-t .portrait{width:56px;height:56px}.sn-t b{display:block;font-size:13px}.sn-t span{font-size:11px;color:var(--red2);text-transform:uppercase;letter-spacing:.06em}
+@keyframes blink{to{opacity:.35}}
 </style>
 </head>
 <body>
@@ -326,43 +452,80 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;ba
 <div id="hhud" class="hidden">
   <div class="top">
     <div class="agent" id="agentCard"><canvas id="aPortrait" width="48" height="48"></canvas><div class="ag-i"><div class="ag-n">AGENT <span class="lv">LV <b id="aLvl">1</b></span></div><div class="xpbar"><i id="aXp"></i></div><small id="hName">Safehouse</small></div></div>
-    <div class="wallet"><div class="pill tok" id="hTokP">🎫 <b id="hTok">0</b></div><div class="pill money" id="hMoney">$0</div></div>
+    <div class="wallet"><div class="pill tok" id="hTokP">{i:ticket} <b id="hTok">0</b></div><div class="pill money" id="hMoney">$0</div></div>
   </div>
   <div class="side-btns">
-    <button class="sb" id="bDaily"><b>🎁</b><small>DAILY</small></button>
-    <button class="sb" id="bChal"><b>🎯</b><small>TASKS</small></button>
-    <button class="sb" id="bAch"><b>🏆</b><small>AWARDS</small></button>
-    <button class="sb" id="bSet"><b>⚙️</b><small>SETTINGS</small></button>
+    <button class="sb" id="bDaily"><b>{i:gift}</b><small>DAILY</small></button>
+    <button class="sb" id="bChal"><b>{i:target}</b><small>TASKS</small></button>
+    <button class="sb" id="bAch"><b>{i:trophy}</b><small>AWARDS</small></button>
+    <button class="sb" id="bRec"><b>{i:podium}</b><small>RECORDS</small></button>
+    <button class="sb" id="bSet"><b>{i:cog}</b><small>SETTINGS</small></button>
   </div>
   <div class="dock">
-    <button data-st="wardrobe"><b>🧥</b>Wardrobe</button>
-    <button data-st="armory"><b>🔫</b>Armory</button>
-    <button data-st="gear"><b>🎒</b>Gear</button>
-    <button data-st="upgrades"><b>🏠</b>Upgrades</button>
+    <button data-st="wardrobe"><b>{i:shirt}</b>Wardrobe</button>
+    <button data-st="armory"><b>{i:gun}</b>Armory</button>
+    <button data-st="gear"><b>{i:bag}</b>Gear</button>
+    <button data-st="upgrades"><b>{i:home}</b>Upgrades</button>
     <button data-st="contracts" class="main"><b>▶</b>PLAY</button>
   </div>
 </div>
 
 <div id="mhud" class="hidden">
-  <div class="tcard"><canvas id="tPortrait" width="48" height="48"></canvas><div><div class="tn"><span id="tName">Target</span><small>TARGET</small></div><div id="tStatus">—</div><div class="subl">👔 <span id="disg">Your Suit</span> · <span id="zone">Public</span></div></div></div>
+  <div class="tcard"><canvas id="tPortrait" width="48" height="48"></canvas><div><div class="tn"><span id="tName">Target</span><small>TARGET</small></div><div id="tStatus">—</div><div class="subl">{i:shirt} <span id="disg">Your Suit</span> · <span id="zone">Public</span></div></div></div>
   <div id="obj"></div>
   <div class="mmw"><canvas id="mm" width="264" height="264"></canvas><div id="mmFloor">GROUND</div><div id="hpbar"><i></i></div></div>
   <div id="aware" class="aware hidden"></div>
   <div id="inv"></div>
   <div class="rbtns">
-    <button class="rb" id="btnMed" style="display:none">🩹<small>HEAL</small></button>
-    <button class="rb red" id="btnDet" style="display:none">💥<small>DETONATE</small></button>
-    <button class="rb" id="btnDrop" style="display:none">⬇️<small>DROP</small></button>
-    <button class="rb" id="btnOpp">📋<small>INTEL</small></button>
-    <button class="rb" id="btnRun">🏃<small>RUN</small></button>
-    <button class="rb" id="btnPause">⏸<small>MENU</small></button>
+    <button class="rb" id="btnMed" style="display:none">{i:cross}<small>HEAL</small></button>
+    <button class="rb red" id="btnDet" style="display:none">{i:burst}<small>DETONATE</small></button>
+    <button class="rb" id="btnDrop" style="display:none">{i:down}<small>DROP</small></button>
+    <button class="rb" id="btnInst">{i:eye}<small>INSTINCT</small><i class="im"><b id="instM"></b></i></button>
+    <button class="rb" id="btnOpp">{i:list}<small>INTEL</small></button>
+    <button class="rb" id="btnRun">{i:run}<small>RUN</small></button>
+    <button class="rb" id="btnPause">{i:pause}<small>MENU</small></button>
   </div>
   <div id="bubbles"></div>
   <div id="actProg" class="hidden"></div>
   <div id="hit"></div>
 </div>
 
+<div id="shud" class="hidden">
+  <div class="scope"><div class="sc-ring"></div><div class="sc-h"></div><div class="sc-v"></div><div class="sc-dot"></div><div class="sc-z" id="scZoom">1.0x</div></div>
+  <div id="sMuzzle"></div>
+  <div class="s-top"><div id="sTargets"></div><div class="s-time">{i:clock} <span id="sTime">0:00</span></div></div>
+  <div class="s-left">
+    <button class="rb" id="sFloorUp">{i:up}<small>UP</small></button>
+    <div id="sFloor">GROUND</div>
+    <button class="rb" id="sFloorDn">{i:down}<small>DOWN</small></button>
+    <button class="rb" id="sNext">{i:target}<small>TARGET</small></button>
+    <button class="rb" id="sInst">{i:eye}<small>INSTINCT</small><i class="im"><b id="sInstM"></b></i></button>
+  </div>
+  <div class="s-right">
+    <button class="rb" id="sPause">{i:pause}<small>MENU</small></button>
+    <button class="rb" id="sZoomIn">{i:plus}<small>ZOOM</small></button>
+    <button class="rb" id="sZoomOut">{i:minus}<small>WIDE</small></button>
+    <button class="rb" id="sReload">{i:reload}<small>RELOAD</small></button>
+    <button id="sFire">{i:scope}<b>FIRE</b><small id="sAmmo">5 / 15</small></button>
+  </div>
+</div>
+
+<div id="rphud" class="hidden">
+  <div class="rp-top"><div class="rp-t">{i:film} REPLAY <span id="rpInfo"></span></div><button class="rb" id="rpExit">{i:x}<small>EXIT</small></button></div>
+  <div id="rpEv"></div>
+  <div class="rp-bar"><button id="rpPlay">{i:pause}</button><div class="rp-track" id="rpTrack"><i id="rpFill"></i><div id="rpTicks"></div></div><span id="rpTime">0:00</span><button id="rpSpd">1x</button></div>
+</div>
+
+<div id="cine" class="hidden">
+  <div class="cn-bar top"></div><div class="cn-bar bot"></div>
+  <div class="cn-title"><b id="cnT"></b><span id="cnS"></span></div>
+  <div class="cn-cap hidden"><canvas id="cnP" width="64" height="64"></canvas><div class="cn-tx"><div class="cn-who" id="cnW"></div><div class="cn-line" id="cnL"></div></div><div class="cn-next">TAP</div></div>
+  <button class="cn-skip" id="cnSkip">SKIP {i:fast}</button>
+</div>
+
 <div id="popups"></div>
+<div id="instfx" class="hidden"></div>
+<div id="tut" class="hidden"></div>
 <div id="killflash" class="hidden"></div>
 <div id="letterbox" class="hidden"></div>
 <div id="banner" class="hidden"></div>
@@ -374,6 +537,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;ba
 <div id="modal" class="hidden"></div>
 <div id="loading"><div class="spin"></div>LOADING CONTRACT</div>
 
+<script src="icons.js"></script>
 <script src="engine.js"></script>
 <script src="world.js"></script>
 <script src="data.js"></script>
@@ -382,7 +546,9 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;ba
 <script src="audio.js"></script>
 <script src="progress.js"></script>
 <script src="story.js"></script>
+<script src="tutorial.js"></script>
 <script src="ui.js"></script>
 <script src="menus.js"></script>
+<script src="extras.js"></script>
 </body>
 </html>

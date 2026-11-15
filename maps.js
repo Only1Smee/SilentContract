@@ -6,10 +6,10 @@ const MAP_W = 120, MAP_H = 58, MAP_D = 120, G = 3, FH = 4;
 let BX = 40, BZ = 42, BW = 40, BD = 30; // current venue frame (set per map)
 
 const TIMES = {
-  day: { sun: [0.5, 0.85, 0.3], sunCol: [1.05, 1.0, 0.92], sky: [0.62, 0.72, 0.88], ground: [0.42, 0.37, 0.3], amb: 0.62, fog: [0.76, 0.84, 0.94], fogN: 50, fogF: 140, skyTop: [0.28, 0.52, 0.9], skyBot: [0.8, 0.88, 0.97], night: 0, lamp: 0.5 },
-  sunset: { sun: [0.75, 0.32, 0.35], sunCol: [1.25, 0.78, 0.48], sky: [0.62, 0.52, 0.6], ground: [0.4, 0.3, 0.25], amb: 0.56, fog: [0.92, 0.66, 0.52], fogN: 45, fogF: 130, skyTop: [0.28, 0.3, 0.62], skyBot: [1.0, 0.62, 0.42], night: 0, lamp: 0.8 },
-  dusk: { sun: [-0.4, 0.42, 0.6], sunCol: [0.85, 0.62, 0.6], sky: [0.42, 0.44, 0.62], ground: [0.25, 0.22, 0.25], amb: 0.52, fog: [0.42, 0.4, 0.55], fogN: 40, fogF: 120, skyTop: [0.12, 0.15, 0.38], skyBot: [0.72, 0.48, 0.52], night: 0, lamp: 1.0 },
-  night: { sun: [0.3, 0.8, -0.45], sunCol: [0.32, 0.4, 0.62], sky: [0.22, 0.26, 0.42], ground: [0.12, 0.1, 0.12], amb: 0.5, fog: [0.06, 0.07, 0.13], fogN: 35, fogF: 115, skyTop: [0.02, 0.03, 0.09], skyBot: [0.1, 0.12, 0.26], night: 1, lamp: 1.3 }
+  day: { sun: [0.5, 0.85, 0.3], sunCol: [1.05, 1.0, 0.92], sky: [0.7, 0.78, 0.92], ground: [0.5, 0.45, 0.38], amb: 0.78, fog: [0.76, 0.84, 0.94], fogN: 50, fogF: 140, skyTop: [0.28, 0.52, 0.9], skyBot: [0.8, 0.88, 0.97], night: 0, lamp: 0.5 },
+  sunset: { sun: [0.75, 0.32, 0.35], sunCol: [1.25, 0.78, 0.48], sky: [0.72, 0.62, 0.68], ground: [0.5, 0.4, 0.34], amb: 0.74, fog: [0.92, 0.66, 0.52], fogN: 45, fogF: 130, skyTop: [0.28, 0.3, 0.62], skyBot: [1.0, 0.62, 0.42], night: 0, lamp: 0.8 },
+  dusk: { sun: [-0.4, 0.42, 0.6], sunCol: [1.0, 0.78, 0.72], sky: [0.6, 0.6, 0.76], ground: [0.38, 0.33, 0.36], amb: 0.74, fog: [0.5, 0.47, 0.62], fogN: 40, fogF: 120, skyTop: [0.12, 0.15, 0.38], skyBot: [0.72, 0.48, 0.52], night: 0, lamp: 1.0 },
+  night: { sun: [0.3, 0.8, -0.45], sunCol: [0.6, 0.68, 0.92], sky: [0.46, 0.5, 0.7], ground: [0.26, 0.22, 0.26], amb: 0.72, fog: [0.1, 0.11, 0.2], fogN: 35, fogF: 115, skyTop: [0.02, 0.03, 0.09], skyBot: [0.1, 0.12, 0.26], night: 1, lamp: 1.3 }
 };
 
 const CITIES = [
@@ -260,7 +260,8 @@ function buildMap(cityIdx, seed) {
   w.setZone(BX - 1, G, BZ + BD, BX + BW, G + 2, CZ1 - 1, Z_STAFF);
   prop('container', [BX + 3, G, BZ + BD + 4], { name: 'Dumpster', cap: 2, model: 'dumpster' });
   prop('container', [BX + BW - 6, G, BZ + BD + 4], { name: 'Dumpster', cap: 2, model: 'dumpster' });
-  if (CZ1 - (BZ + BD) > 6) { car(w, BX + Math.floor(BW / 2), G, BZ + BD + 3, B.WHITE, 'x'); }
+  if (CZ1 - (BZ + BD) > 6) { car(w, BX + Math.floor(BW / 2), G, BZ + BD + 3, B.WHITE, 'x'); prop('caralarm', [BX + Math.floor(BW / 2) + 1, G + 1, BZ + BD + 3], { name: 'Catering Van' }); }
+  prop('caralarm', [8 + 1, G + 1, 18], { name: 'Parked Car' });
   lampPost(w, BX + Math.floor(BW / 2) - 3, G, BZ + BD + 5, M);
   spot('yard', [BX + 8, G, BZ + BD + 3]); spot('yard', [BX + BW - 8, G, BZ + BD + 5]);
 
@@ -310,6 +311,12 @@ function buildMap(cityIdx, seed) {
   /* ---- the venue ---- */
   buildVenue(w, M, c, rng, LY, yk, spot, prop);
 
+  /* ---- signature kill ---- */
+  placeSignature(w, M, c, rng);
+  /* ---- locked doors: security areas ---- */
+  for (const d of M.doors || []) if ((d.room === 'server' || d.room === 'guardpost' || (d.room === 'security' && d.ext))) d.locked = true;
+  if (!(M.doors || []).some(d => d.locked)) { const d = (M.doors || []).find(d => d.room === 'security'); if (d) d.locked = true; }
+  for (const d of M.doors || []) if (d.locked) M.props.push({ type: 'door', p: [d.cells.reduce((s, c) => s + c[0], 0) / d.cells.length + 0.5, d.y, d.cells.reduce((s, c) => s + c[1], 0) / d.cells.length + 0.5], name: 'Locked Door', door: d });
   /* ---- NPC rosters ---- */
   populate(M, LY, yk, { CX0, CX1, CZ0, CZ1, EX, BKX }, rng);
   for (const k in M.spots) M.spots[k] = M.spots[k].filter(s => w.walkable(s[0], s[1], s[2]));
@@ -377,8 +384,9 @@ function buildVenue(w, M, c, rng, LY, yk, spot, prop) {
     }
     if (VD && k > 0) for (let yy = y; yy <= y + 2; yy++) for (let lz = VD[1] + 1; lz < VD[3]; lz++) for (let lx = VD[0] + 1; lx < VD[2]; lx++) w.set(BX + lx, yy, BZ + lz, 0);
     // doors
-    const carve = (R, cells, zone) => {
+    const carve = (R, cells, zone, ext, other) => {
       for (const [x, z] of cells) { for (let yy = y; yy <= y + 1; yy++) w.set(x, yy, z, 0); w.setZone(x, y, z, x, y + 1, z, zone); doorCells.push([x, y, z]); }
+      (M.doors = M.doors || []).push({ cells: cells.map(c => [c[0], c[1]]), y, room: R.n, other: other || null, zone, ext: !!ext, axis: cells.length > 1 && cells[0][0] !== cells[1][0] ? 'x' : 'z', ang: 0, locked: false });
     };
     for (const R of rooms) {
       const [x0, z0, x1, z1] = R.r;
@@ -400,20 +408,20 @@ function buildVenue(w, M, c, rng, LY, yk, spot, prop) {
         if (x1 === a0 || x0 === a1) { const xw = x1 === a0 ? x1 : x0; const zz = seg([z0, z1], [b0, b1], z => !stairCell(xw - 1, z) && !stairCell(xw + 1, z) && !stairCell(xw, z)); if (zz) cells = zz.map(z => [BX + xw, BZ + z]); }
         else if (z1 === b0 || z0 === b1) { const zw = z1 === b0 ? z1 : z0; const xx = seg([x0, x1], [a0, a1], x => !stairCell(x, zw - 1) && !stairCell(x, zw + 1) && !stairCell(x, zw)); if (xx) cells = xx.map(x => [BX + x, BZ + zw]); }
         if (!cells) console.warn('no door', R.n, '->', P.n, 'floor', k);
-        if (cells) carve(R, cells, Math.max(R.zone === Z_VIP && P.zone === Z_SECURITY ? Z_SECURITY : R.zone, 0));
+        if (cells) carve(R, cells, R.zone, false, P.n);
       }
       if (R.ext && k === 0) {
         const wd = R.n === 'lobby' ? 3 : 2; const cells = [];
         if (R.ext === 'z0' || R.ext === 'z1') { const m = Math.floor((x0 + x1) / 2) - (wd >> 1); for (let i = 0; i < wd; i++) cells.push([BX + m + i, BZ + (R.ext === 'z0' ? z0 : z1)]); }
         else { const m = Math.floor((z0 + z1) / 2) - 1; for (let i = 0; i < wd; i++) cells.push([BX + (R.ext === 'x0' ? x0 : x1), BZ + m + i]); }
-        carve(R, cells, R.zone);
+        carve(R, cells, R.zone, true);
       }
     }
     // ceiling lights
     for (const R of rooms) {
       if (R.n === 'court') continue;
       const cx = (R.a.x0 + R.a.x1 + 1) / 2, cz = (R.a.z0 + R.a.z1 + 1) / 2;
-      M.lights.push({ x: cx, y: y + 2.4, z: cz, r: Math.max(9, (R.a.x1 - R.a.x0) * 0.75), c: R.n === 'ballroom' ? [1.3, 1.0, 0.65] : R.n === 'server' ? [0.4, 0.7, 1.2] : [1.15, 1.0, 0.8] });
+      M.lights.push({ x: cx, y: y + 2.4, z: cz, r: Math.max(11, Math.max(R.a.x1 - R.a.x0, R.a.z1 - R.a.z0) * 0.8), c: R.n === 'ballroom' ? [1.4, 1.1, 0.75] : R.n === 'server' ? [0.5, 0.8, 1.3] : [1.25, 1.1, 0.9] });
     }
   }
   // stairs
@@ -445,6 +453,8 @@ function buildVenue(w, M, c, rng, LY, yk, spot, prop) {
   }
   // re-open doors
   for (const [x, y, z] of doorCells) { w.set(x, y, z, 0); w.set(x, y + 1, z, 0); }
+  M.doorCells = doorCells;
+  addSeats(w, M);
   // roof
   const yr = yk(F);
   for (let lz = 0; lz < BD; lz++) for (let lx = 0; lx < BW; lx++) if (!inVoid(lx, lz)) w.set(BX + lx, yr - 1, BZ + lz, T(c.roof) === B.CLAY ? B.CLAY : B.CONCRETE);
@@ -542,6 +552,7 @@ function decorateRoom(w, M, c, rng, R, free, spot, prop) {
         M.stops.bar = { p: P(bx, cz0 + 1), face: Math.PI, label: 'Ordering a drink at the bar', opp: 'drink' };
         prop('consumable', [bx, y + 1, cz0], { name: 'Cocktail', stop: 'bar', model: 'cocktail' });
         M.pts.bartender = [bx + 1, y, a.z0 + 1];
+        prop('blend', P(bx + 2, a.z0 + 1), { name: 'Bar Service', act: 'Serve drinks', outfits: ['waiter'] });
       }
       for (let z = cz0 + 4; z <= a.z1 - 1; z += 3) for (let x = a.x0 + 1; x <= a.x1 - 1; x += 4) { put(x, z, B.WOOD_D); sp('bar', x + 1, z); }
       for (let x = cxa; x <= cxb; x += 3) if (x !== bx) sp('bar', x, cz0 + 1, Math.PI);
@@ -564,7 +575,9 @@ function decorateRoom(w, M, c, rng, R, free, spot, prop) {
         prop('item', P(a.x1 - 1, a.z1), { item: 'poison', name: 'Rat Poison (Lethal)' });
         prop('disguise', P(a.x1 - 3, a.z1), { outfit: 'chef', name: 'Chef Whites' });
         prop('container', P(a.x1, a.z1 - 2), { name: 'Walk-in Freezer', cap: 2, model: 'freezer' });
-        M.pts.chef1 = [a.x0 + 2, y, sz0 + 2]; M.pts.chef2 = [cx, y, Math.min(a.z1, cz + 3)]; M.pts.kpass = [cx + 3 <= a.x1 ? cx + 3 : cx, y, a.z0 + 1];
+        M.pts.chef1 = [a.x0 + 2, y, sz0 + 2];
+        prop('blend', P(a.x0 + 1, sz0 + 2), { name: 'Prep Station', act: 'Cook', outfits: ['chef'] });
+        { const f = randFree(); if (f) prop('radio', P(f[0], f[1]), { name: 'Kitchen Radio' }); } M.pts.chef2 = [cx, y, Math.min(a.z1, cz + 3)]; M.pts.kpass = [cx + 3 <= a.x1 ? cx + 3 : cx, y, a.z0 + 1];
       }
       break;
     }
@@ -588,6 +601,8 @@ function decorateRoom(w, M, c, rng, R, free, spot, prop) {
         prop('container', P(a.x1 - 1, a.z1 - 1), { name: 'Staff Locker', cap: 1, model: 'closet' });
         prop('item', P(a.x0, a.z1), { item: 'coin', name: 'Coins' });
         M.pts.staff = [cx, y, cz];
+        { const f = randFree(); if (f) prop('radio', P(f[0], f[1]), { name: 'Staff Radio' }); }
+        { const f = randFree(); if (f) prop('item', P(f[0], f[1]), { item: 'keycard', name: 'Keycard' }); }
       }
       break;
     }
@@ -599,7 +614,8 @@ function decorateRoom(w, M, c, rng, R, free, spot, prop) {
         prop('item', [a.x0 + 3, y + 1, a.z0 + 2], { item: 'pistol', name: 'Guard Pistol' });
         prop('disguise', P(a.x1 - 1, a.z1), { outfit: 'guard', name: 'Security Uniform' });
         prop('container', P(a.x1 - 1, a.z1 - 3), { name: 'Gun Locker', cap: 1, model: 'closet' });
-        M.pts.sec1 = [cx, y, a.z0 + 3]; M.pts.sec2 = [a.x0 + 1, y, a.z1 - 1]; M.pts.sec3 = [a.x1 - 2, y, cz + 1];
+        M.pts.sec1 = [cx, y, a.z0 + 3];
+        prop('blend', P(cx + 1, a.z0 + 3), { name: 'Security Monitors', act: 'Watch the monitors', outfits: ['guard'] }); M.pts.sec2 = [a.x0 + 1, y, a.z1 - 1]; M.pts.sec3 = [a.x1 - 2, y, cz + 1];
       }
       M.lights.push({ x: cx, y: y + 1.5, z: a.z0 + 1, r: 6, c: [0.3, 0.6, 1.0] });
       break;
@@ -624,6 +640,7 @@ function decorateRoom(w, M, c, rng, R, free, spot, prop) {
       if (main) {
         M.stops.speech = { p: P(ccx, ccz), face: Math.PI, label: 'Giving a toast under the chandelier', opp: 'chandelier' };
         M.stops.buffet = { p: P(a.x0 + 1, bz), face: -Math.PI / 2, label: 'Snacking at the buffet', opp: 'food' };
+        prop('blend', P(a.x0 + 1, bz + 2), { name: 'Buffet Table', act: 'Mingle at the buffet', outfits: ['suit', 'guest', 'vip', 'waiter'] });
         prop('chandelier', [ccx, y + 2, ccz], { name: 'Crystal Chandelier', stop: 'speech' });
         prop('consumable', [a.x0, y + 1, bz], { name: 'Canapé Platter', stop: 'buffet', model: 'plate' });
       }
@@ -636,6 +653,7 @@ function decorateRoom(w, M, c, rng, R, free, spot, prop) {
       put(cx, cz, B.MARBLE_B);
       row(a.x1, a.z0, a.x1, a.z1, B.BOOKS, 2);
       for (let i = 0; i < 4; i++) { const f = randFree(); if (f) sp('lounge', f[0], f[1]); }
+      if (main) { const f = randFree(); if (f) prop('radio', P(f[0], f[1]), { name: 'Hi-Fi Stereo' }); }
       M.lights.push({ x: cx, y: y + 2, z: cz, r: 8, c: [1.0, 0.5, 0.8] });
       break;
     }
@@ -648,6 +666,7 @@ function decorateRoom(w, M, c, rng, R, free, spot, prop) {
         prop('item', [a.x0 + 3, y + 1, a.z1], { item: 'wrench', name: 'Wrench' });
         prop('container', P(a.x1 - 1, a.z1 - 2), { name: 'Equipment Crate', cap: 1, model: 'crate' });
         M.pts.tech1 = [cx, y, cz]; M.pts.tech2 = [a.x1 - 1, y, a.z0 + 1];
+        prop('fusebox', P(a.x0 + 1, a.z1 - 1), { name: 'Fuse Box' });
       }
       break;
     }
@@ -726,6 +745,59 @@ function decorateRoom(w, M, c, rng, R, free, spot, prop) {
       M.pts.server = [a.x0, y, cz];
       break;
     }
+  }
+}
+
+/* ---------------- signature kill placement ---------------- */
+function placeSignature(w, M, c, rng) {
+  const S = SIGNATURES[c.id]; if (!S) return;
+  const pref = S.rooms.concat(['lobby', 'ballroom', 'lounge', 'bar', 'court', 'gallery', 'hall']);
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  for (const rn of pref) {
+    const R = M.roomList.find(r => (r.deco || r.n) === rn || r.n === rn); if (!R) continue;
+    const cand = [];
+    for (let z = R.a.z0 + 1; z <= R.a.z1 - 1; z++) for (let x = R.a.x0 + 1; x <= R.a.x1 - 1; x++) {
+      if (!w.walkable(x, R.y, z)) continue;
+      const busy = M.props.some(p => Math.abs(p.p[0] - x - 0.5) < 2 && Math.abs(p.p[2] - z - 0.5) < 2 && Math.abs(p.p[1] - R.y) < 2) || Object.values(M.stops).some(s => Math.abs(s.p[0] - x) < 3 && Math.abs(s.p[2] - z) < 3 && s.p[1] === R.y);
+      if (busy) continue;
+      for (const [dx, dz] of dirs) if (w.walkable(x + dx, R.y, z + dz) && w.walkable(x - dx, R.y, z - dz)) { cand.push([x, z, dx, dz]); break; }
+    }
+    if (!cand.length) continue;
+    const [x, z, dx, dz] = cand[Math.floor(rng() * cand.length)];
+    const y = R.y;
+    if (S.type === 'drop') {
+      M.stops.signature = { p: [x, y, z], face: Math.atan2(dx, dz), label: S.label, opp: 'sig', sig: S };
+      M.props.push({ type: 'sig', p: [x + 0.5, y + 2.2, z + 0.5], name: S.name, stop: 'signature', sig: S });
+    } else {
+      M.stops.signature = { p: [x, y, z], face: Math.atan2(dx, dz), label: S.label, opp: 'sig', sig: S };
+      M.props.push({ type: 'sig', p: [x + dx + 0.5, y, z + dz + 0.5], name: S.name, stop: 'signature', sig: S });
+    }
+    return;
+  }
+}
+
+/* ---------------- seats: sofas, stools, benches ---------------- */
+function addSeats(w, M) {
+  const SEAT = new Set([B.LEATHER, B.FABRIC, B.WOOD_D, B.FABRIC_D]);
+  const groupOf = { lobby: 'lobby', bar: 'bar', lounge: 'lounge', privatebar: 'privatebar', ballroom: 'ballroom', court: 'court', vipgallery: 'lounge', skylounge: 'lounge' };
+  const push = (g, x, y, z, f) => { (M.spots[g] = M.spots[g] || []).push([x, y, z, f, 'sit']); };
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  for (const R of M.roomList) {
+    const g = groupOf[R.deco || R.n]; if (!g) continue;
+    let n = 0;
+    for (let z = R.a.z0; z <= R.a.z1 && n < 6; z++) for (let x = R.a.x0; x <= R.a.x1 && n < 6; x++) {
+      if (!SEAT.has(w.get(x, R.y, z)) || w.get(x, R.y + 1, z)) continue;
+      for (const [dx, dz] of dirs) { if (w.walkable(x + dx, R.y, z + dz)) { push(g, x + dx, R.y, z + dz, Math.atan2(dx, dz)); n++; break; } }
+    }
+  }
+  // outdoor benches
+  let ng = 0, ns = 0;
+  for (let z = 26; z < 96; z++) for (let x = 6; x < 114; x++) {
+    if (w.get(x, G, z) !== B.WOOD_D || w.get(x, G + 1, z)) continue;
+    if (x >= BX && x < BX + BW && z >= BZ && z < BZ + BD) continue;
+    const inC = x >= BX - 10 && x <= BX + BW + 9 && z <= BZ + BD + 10;
+    if (inC ? ng > 6 : ns > 8) continue;
+    for (const [dx, dz] of dirs) if (w.walkable(x + dx, G, z + dz) && w.zoneAt(x + dx, G, z + dz) === Z_PUBLIC) { push(inC ? 'garden' : 'side', x + dx, G, z + dz, Math.atan2(dx, dz)); inC ? ng++ : ns++; break; }
   }
 }
 

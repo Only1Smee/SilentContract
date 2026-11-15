@@ -23,11 +23,11 @@ const CAMPAIGN = [
 ];
 
 const STARTS = [
-  { id: 'street', name: 'Main Street', icon: '🚶', req: 0, desc: 'Arrive with the guests.' },
-  { id: 'alley', name: 'Back Alley', icon: '🌙', req: 1, desc: 'Slip in near the service entrance.' },
-  { id: 'staff', name: 'Staff Room', icon: '🍸', req: 2, outfit: 'waiter', desc: 'Start inside, dressed as a waiter.' },
-  { id: 'kitchen', name: 'Kitchen', icon: '👨‍🍳', req: 3, outfit: 'chef', desc: 'Start in the kitchen as a chef.' },
-  { id: 'security', name: 'Security Office', icon: '🛡️', req: 5, outfit: 'guard', desc: 'Start as a guard. Watch the enforcers.' }
+  { id: 'street', name: 'Main Street', icon: '{i:walk}', req: 0, desc: 'Arrive with the guests.' },
+  { id: 'alley', name: 'Back Alley', icon: '{i:moon}', req: 1, desc: 'Slip in near the service entrance.' },
+  { id: 'staff', name: 'Staff Room', icon: '{i:glass}', req: 2, outfit: 'waiter', desc: 'Start inside, dressed as a waiter.' },
+  { id: 'kitchen', name: 'Kitchen', icon: '{i:chef}', req: 3, outfit: 'chef', desc: 'Start in the kitchen as a chef.' },
+  { id: 'security', name: 'Security Office', icon: '{i:shield}', req: 5, outfit: 'guard', desc: 'Start as a guard. Watch the enforcers.' }
 ];
 
 const Elusive = {
@@ -63,3 +63,21 @@ const LINES = {
   target: ['Another drink. The strong stuff.', 'Where is my security? Useless!', 'Get me away from these people.', 'Do you know who I am?', 'Ha! Wonderful party, isn\'t it?'],
   hintStop: { speech: 0, bar: 1, balcony: 2, sauna: 3, pool: 4, kitchen: 5, office: 6 }
 };
+
+/* ---------- weekly challenge contract ---------- */
+const Weekly = {
+  week() { const d = new Date(), j = new Date(d.getFullYear(), 0, 1); return d.getFullYear() * 100 + Math.ceil(((d - j) / 86400000 + j.getDay() + 1) / 7); },
+  state() {
+    const w = this.week(), P = Game.S.prog;
+    if (!P.weeklyPick || P.weeklyPick.week !== w) {
+      const rng = RNG(w * 7 + 3), unlocked = CITIES.map((c, i) => i).filter(i => Game.cityUnlocked(i));
+      let ids = rng.shuffle(WEEKLY_RULES.map(r => r.id));
+      const pick = []; for (const id of ids) { if (pick.length >= 3) break; if ((id === 'accident' && pick.includes('poison')) || (id === 'poison' && pick.includes('accident'))) continue; pick.push(id); }
+      P.weeklyPick = { week: w, ci: rng.pick(unlocked.length ? unlocked : [0]), seed: (w * 2246822519) >>> 0, rules: pick };
+    }
+    const wp = P.weeklyPick;
+    return { week: w, ci: wp.ci, seed: wp.seed, rules: wp.rules, done: !!(P.weekly && P.weekly.week === w && P.weekly.done) };
+  },
+  timeLeft() { const n = new Date(), m = new Date(n); m.setDate(n.getDate() + ((8 - n.getDay()) % 7 || 7)); m.setHours(0, 0, 0, 0); const ms = m - n; return `${Math.floor(ms / 8.64e7)}d ${Math.floor(ms / 3.6e6) % 24}h`; }
+};
+STOP_INFO.signature = { kind: 'accident', steps: ['Find the city\'s signature object (red outline)', 'Set it up (rig it with a wrench, poison it, or wait under it)', 'Wait for the target to use it'] };

@@ -86,6 +86,7 @@ const Sfx = {
       case 'alarm': for (let i = 0; i < 3; i++) { this.tone(880, 0.15, 'square', 0.09, t + i * 0.3); this.tone(660, 0.15, 'square', 0.09, t + i * 0.3 + 0.15); } break;
       case 'hit': this.noise(0.1, 0.4, 1200); this.tone(200, 0.15, 'sawtooth', 0.15, t, 80); break;
       case 'cash': this.tone(1568, 0.1, 'square', 0.06); this.tone(2093, 0.25, 'square', 0.06, t + 0.08); this.noise(0.1, 0.06, 6000, 1, t, 'highpass'); break;
+      case 'radio': [523, 659, 784][Math.floor(Math.random() * 3)] && this.tone([392, 494, 587, 659][Math.floor(Math.random() * 4)], 0.18, 'square', 0.035); break;
       case 'tick': this.tone(1800, 0.03, 'square', 0.03); break;
       case 'rank': this.noise(0.8, 0.6, 400); this.tone(70, 0.9, 'sine', 0.6, t, 35); this.tone(523, 0.7, 'triangle', 0.1, t + 0.05); this.tone(784, 0.7, 'triangle', 0.08, t + 0.05); break;
       case 'achieve': [523, 659, 784, 1047].forEach((f, i) => this.tone(f, 0.25, 'triangle', 0.1, t + i * 0.07)); break;

@@ -131,7 +131,7 @@ class World {
     return -1;
   }
   // A* over voxel cells (x,y,z). returns array of [x,y,z]
-  path(sx, sy, sz, gx, gy, gz, maxN) {
+  path(sx, sy, sz, gx, gy, gz, maxN, blocked) {
     maxN = maxN || 24000;
     const W = this.W, D = this.D;
     const key = (x, y, z) => (y * D + z) * W + x;
@@ -164,6 +164,7 @@ class World {
           if (dy === 1 && this.solid(x, y + 2, z)) continue;
           if (dy === -1 && this.solid(nx, y + 1, nz)) continue;
           const nk = key(nx, ny, nz); if (cl[nk] === stamp) break;
+          if (blocked && blocked.has(nk)) break;
           const cost = gc + (diag ? 1.414 : 1) + (dy ? 0.6 : 0);
           if (st[nk] !== stamp || cost < gA[nk]) { st[nk] = stamp; gA[nk] = cost; came[nk] = cur; open.push(nk, cost + h(nx, ny, nz)); }
           break;

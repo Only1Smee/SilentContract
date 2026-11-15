@@ -97,7 +97,8 @@ const FS_MAIN = `#version 300 es
 precision highp float;
 in vec3 vW; in vec3 vN; in vec3 vC; in vec2 vUV; in float vAO; flat in float vPat; in vec4 vLP; in vec3 vL;
 uniform vec3 uSun, uSunCol, uSky, uGround, uFogCol, uCam;
-uniform float uFogN, uFogF, uCut, uTime, uAmb;
+uniform float uFogN, uFogF, uCut, uTime, uAmb, uExpo, uFadeY;
+uniform vec4 uFade; uniform vec2 uRes;
 uniform vec4 uTint; uniform vec4 uEmit;
 uniform sampler2D uShadow; uniform int uShadowOn; uniform float uShTex;
 uniform vec4 uLP[10]; uniform vec4 uLC[10];
@@ -119,6 +120,13 @@ void main(){
   float pat = vPat; bool cut=false;
   if(pat>=99.5){ cut=true; pat-=100.; }
   if(cut && vW.y>uCut+0.02) discard;
+  if(cut && uFade.w > 0.0 && vW.y > uFadeY){
+    vec2 sc = gl_FragCoord.xy/uRes; vec2 dd = (sc-uFade.xy)*vec2(uRes.x/uRes.y,1.0); float dc = length(dd);
+    if(dc < uFade.w && length(vW-uCam) < uFade.z - 1.0){
+      float th = fract(sin(dot(floor(gl_FragCoord.xy*0.5),vec2(12.9898,78.233)))*43758.5453);
+      if(th < 0.88*smoothstep(uFade.w, uFade.w*0.55, dc)) discard;
+    }
+  }
   vec3 n = normalize(vN);
   vec3 base = vC*uTint.rgb;
   float alpha = 1.0; float emis = 0.0;
@@ -187,8 +195,8 @@ void main(){
   }
   bool co = (pat>10.5&&pat<11.5)||(pat>15.5&&pat<16.5);
   if(!gl_FrontFacing && co) n=-n;
-  if(!gl_FrontFacing && uTrans==0 && !co){ o = vec4(base*0.28*vec3(0.9,0.95,1.0),1.); return; }
-  vec3 amb = mix(uGround, uSky, n.y*0.5+0.5)*uAmb;
+  if(!gl_FrontFacing && uTrans==0 && !co && pat > -0.5){ o = vec4(base*0.28*vec3(0.9,0.95,1.0),1.); return; }
+  vec3 amb = max(mix(uGround, uSky, n.y*0.5+0.5)*uAmb, vec3(0.30,0.30,0.33));
   float sh = uShadowOn==1 ? shadowF() : 1.0;
   float dif = max(dot(n,uSun),0.);
   float ao = vAO;
@@ -196,7 +204,7 @@ void main(){
   for(int i=0;i<10;i++){
     vec3 d = uLP[i].xyz - vW; float r=uLP[i].w; if(r<=0.) continue;
     float dl = length(d); float a = clamp(1.-dl/r,0.,1.); a*=a;
-    pl += uLC[i].rgb * a * (0.35+0.65*max(dot(n,d/max(dl,0.001)),0.));
+    pl += uLC[i].rgb * a * (0.45+0.55*max(dot(n,d/max(dl,0.001)),0.)) * 1.5;
   }
   vec3 col = base*(amb*ao + uSunCol*dif*sh*(0.55+0.45*ao) + pl*ao);
   col = mix(col, base*1.25, emis);
@@ -204,7 +212,9 @@ void main(){
   float dist = length(vW-uCam);
   float f = clamp((dist-uFogN)/(uFogF-uFogN),0.,1.);
   col = mix(col, uFogCol, f*f);
-  col = col/(1.0+col*0.12);
+  col *= uExpo;
+  col = col/(1.0+col*0.18);
+  col = pow(max(col, vec3(0.0)), vec3(0.88));
   o = vec4(col, alpha*uTint.a);
 }`;
 
@@ -239,7 +249,7 @@ const Engine = {
   gl: null, canvas: null, progs: {}, worldMesh: null, transMesh: null, cube: null,
   shadowFB: null, shadowTex: null, shadowSize: 2048, quality: 'high',
   cam: { yaw: 0.7, pitch: 0.95, dist: 22, tx: 0, ty: 0, tz: 0, fov: 0.75 },
-  view: null, proj: null, vp: null, lvp: null, eye: [0, 0, 0], shakeAmt: 0,
+  view: null, proj: null, vp: null, lvp: null, eye: [0, 0, 0], shakeAmt: 0, exposure: 1.2,
   env: null, cut: 999, time: 0, lights: [],
   queue: [], // entity boxes this frame
 
@@ -390,6 +400,9 @@ const Engine = {
 
   // queue a box: model matrix, color [r,g,b], opts
   box(m, col, emit, alpha) { this.queue.push({ m, col, emit: emit || null, a: alpha === undefined ? 1 : alpha }); },
+  // inverted-hull outline: an enlarged box drawn back-faces-only in a flat glow colour
+  xray(m, col, a) { this.queue.push({ m, col: [0, 0, 0], emit: [col[0], col[1], col[2], 1], a: 1, xr: a || 0.4, noShadow: true }); },
+  outline(m, col, k) { this.queue.push({ m, col: [0, 0, 0], emit: [col[0], col[1], col[2], k === undefined ? 1 : k], a: 1, outline: true, noShadow: true }); },
 
   updateCamera() {
     const c = this.cam, cv = this.canvas;
@@ -424,7 +437,7 @@ const Engine = {
       gl.uniformMatrix4fv(P.u.uModel, false, M4.ident());
       gl.bindVertexArray(this.worldMesh.vao); gl.drawElements(gl.TRIANGLES, this.worldMesh.count, gl.UNSIGNED_INT, 0);
       gl.bindVertexArray(this.cube.vao);
-      for (const q of this.queue) { if (q.a < 1 || q.noShadow) continue; gl.uniformMatrix4fv(P.u.uModel, false, q.m); gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0); }
+      for (const q of this.queue) { if (q.a < 1 || q.noShadow || q.xr) continue; gl.uniformMatrix4fv(P.u.uModel, false, q.m); gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0); }
       gl.cullFace(gl.BACK); gl.disable(gl.CULL_FACE);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
@@ -441,7 +454,14 @@ const Engine = {
     const P = this.progs.main; gl.useProgram(P.p);
     gl.uniformMatrix4fv(P.u.uVP, false, this.vp); gl.uniformMatrix4fv(P.u.uLVP, false, this.lvp);
     gl.uniform3fv(P.u.uSun, E.sun); gl.uniform3fv(P.u.uSunCol, E.sunCol); gl.uniform3fv(P.u.uSky, E.sky); gl.uniform3fv(P.u.uGround, E.ground);
-    gl.uniform3fv(P.u.uFogCol, E.fog); gl.uniform1f(P.u.uFogN, E.fogN); gl.uniform1f(P.u.uFogF, E.fogF); gl.uniform1f(P.u.uAmb, E.amb);
+    gl.uniform3fv(P.u.uFogCol, E.fog); gl.uniform1f(P.u.uFogN, E.fogN); gl.uniform1f(P.u.uFogF, E.fogF); gl.uniform1f(P.u.uAmb, E.amb); gl.uniform1f(P.u.uExpo, (this.exposure || 1.2) * (this.expoMul || 1));
+    gl.uniform2f(P.u.uRes, cv.width, cv.height);
+    if (this.fadeTarget) {
+      const f = this.fadeTarget, fl = this.fadeLift === undefined ? 1.0 : this.fadeLift, pv = M4.xform(this.vp, [f[0], f[1] + fl, f[2], 1]);
+      const sx = pv[0] / pv[3] * 0.5 + 0.5, sy = pv[1] / pv[3] * 0.5 + 0.5;
+      const dist = Math.hypot(f[0] - this.eye[0], f[1] + fl - this.eye[1], f[2] - this.eye[2]);
+      gl.uniform4f(P.u.uFade, sx, sy, dist, this.fadeR || 0.11); gl.uniform1f(P.u.uFadeY, f[1] + 0.35);
+    } else gl.uniform4f(P.u.uFade, 0, 0, 0, 0);
     gl.uniform3fv(P.u.uCam, this.eye); gl.uniform1f(P.u.uCut, this.cut); gl.uniform1f(P.u.uTime, this.time);
     gl.uniform1i(P.u.uShadowOn, shadows ? 1 : 0); gl.uniform1f(P.u.uShTex, 1 / this.shadowSize);
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, this.shadowTex); gl.uniform1i(P.u.uShadow, 0);
@@ -457,12 +477,20 @@ const Engine = {
     gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK);
     gl.bindVertexArray(this.cube.vao);
     const trans = [];
+    const outl = [], xrays = [];
     for (const q of this.queue) {
       if (q.a < 1) { trans.push(q); continue; }
+      if (q.outline) { outl.push(q); continue; }
+      if (q.xr) { xrays.push(q); continue; }
       gl.uniformMatrix4fv(P.u.uModel, false, q.m);
       gl.uniform4f(P.u.uTint, q.col[0], q.col[1], q.col[2], 1);
       if (q.emit) gl.uniform4f(P.u.uEmit, q.emit[0], q.emit[1], q.emit[2], q.emit[3]); else gl.uniform4f(P.u.uEmit, 0, 0, 0, 0);
       gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
+    }
+    if (outl.length) {
+      gl.cullFace(gl.FRONT);
+      for (const q of outl) { gl.uniformMatrix4fv(P.u.uModel, false, q.m); gl.uniform4f(P.u.uTint, 0, 0, 0, 1); gl.uniform4f(P.u.uEmit, q.emit[0], q.emit[1], q.emit[2], q.emit[3]); gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0); }
+      gl.cullFace(gl.BACK);
     }
     // transparent world
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
@@ -478,13 +506,18 @@ const Engine = {
       gl.uniformMatrix4fv(P.u.uModel, false, M4.ident()); gl.uniform4f(P.u.uTint, 1, 1, 1, 1); gl.uniform4f(P.u.uEmit, 0, 0, 0, 0);
       gl.bindVertexArray(this.transMesh.vao); gl.drawElements(gl.TRIANGLES, this.transMesh.count, gl.UNSIGNED_INT, 0);
     }
+    if (xrays.length) {
+      gl.disable(gl.DEPTH_TEST); gl.enable(gl.CULL_FACE); gl.cullFace(gl.BACK); gl.bindVertexArray(this.cube.vao);
+      for (const q of xrays) { gl.uniformMatrix4fv(P.u.uModel, false, q.m); gl.uniform4f(P.u.uTint, 0, 0, 0, q.xr); gl.uniform4f(P.u.uEmit, q.emit[0], q.emit[1], q.emit[2], 1); gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0); }
+      gl.enable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE);
+    }
     gl.depthMask(true); gl.disable(gl.BLEND);
     gl.bindVertexArray(null);
     this.queue.length = 0;
   },
 
   resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, this.quality === 'high' ? 2 : 1.25);
+    const dpr = Math.min(window.devicePixelRatio || 1, this.quality === 'high' ? 2 : this.quality === 'lite' ? 1 : 1.25);
     const w = Math.floor(this.canvas.clientWidth * dpr), h = Math.floor(this.canvas.clientHeight * dpr);
     if (this.canvas.width !== w || this.canvas.height !== h) { this.canvas.width = w; this.canvas.height = h; }
   },
