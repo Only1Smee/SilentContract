@@ -12,9 +12,9 @@ const Game = {
   /* ---------- save ---------- */
   newSave() {
     return {
-      v: 1, money: 8000, completed: {}, best: {}, contracts: {}, unlocked: { weapons: ['pistol9'], gear: ['wire', 'coin'], suits: ['classic'] },
+      v: 1, money: 8000, completed: {}, best: {}, contracts: {}, unlocked: { weapons: ['pistol9'], gear: ['wire', 'coin'], suits: ['slate', 'classic'] },
       lv: { hide: 0, slots: 0, armor: 0, intel: 0 },
-      look: { skin: 1, hair: 'slick', hairCol: 0, beard: 'stubble', eye: 'none', tie: 0, suit: 'classic', gloves: false },
+      look: { skin: 1, hair: 'sidepart', hairCol: 1, beard: 'stubble', eye: 'none', tie: 0, suit: 'slate', gloves: false },
       loadout: { weapon: 'pistol9', gear: ['wire', 'coin'] }, settings: { quality: 'high' }, stats: { contracts: 0, s: 0, earned: 0 }, created: false
     };
   },
@@ -1220,13 +1220,13 @@ const Game = {
         if (n.y > cut + 0.5) continue;
         if (!near(n.x, n.z, Engine.quality === 'lite' ? 32 : 60)) continue;
         const dead = n.state === 'dead' || n.state === 'ko';
-        const em = n.isTarget && (this.C.intel >= 1 || this.targetVisible) && !dead ? [1, 0.1, 0.1, 0.12 + 0.08 * Math.sin(t * 4)] : null;
+        const em = n.isTarget && (this.C.intel >= 1 || this.targetVisible) && !dead ? [1, 0.72, 0.15, 0.14 + 0.08 * Math.sin(t * 4)] : null;
         const dK = dead ? Math.min(1, (this.time - (n.deathT || n.koT || 0)) / 0.5) : 1;
         drawCharacter(n.x, n.y, n.z, n.face, n.looks, n.outfit, null, { walk: n.moving, phase: n.phase, dead, deadK: dK, aim: n.aim, act: false, idle: n.state === 'held' ? 'struggle' : !n.moving && !dead && n.state !== 'alert' ? n.idle : (n.moving && n.idle === 'tray' ? 'tray' : null), t: t + n.id * 0.7 }, { emit: em });
         // marker above target
         if (n.isTarget && !dead && (this.C.intel >= 1 || this.targetVisible)) {
           const hy = n.y + 2.4 + Math.sin(t * 3) * 0.1;
-          Engine.box(M4.mul(M4.T(n.x, hy, n.z), M4.mul(M4.RY(t * 2), M4.mul(M4.RZ(Math.PI / 4), M4.S(0.22, 0.22, 0.22)))), [1, 0.15, 0.15], [1, 0.1, 0.1, 0.9]);
+          Engine.box(M4.mul(M4.T(n.x, hy, n.z), M4.mul(M4.RY(t * 2), M4.mul(M4.RZ(Math.PI / 4), M4.S(0.22, 0.22, 0.22)))), [1, 0.78, 0.25], [1, 0.72, 0.15, 0.95]);
         }
         // suspicion indicator
         if (!dead && n.susp > 0.05 && n.state !== 'alert') {

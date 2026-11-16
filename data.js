@@ -25,6 +25,7 @@ const SHOP_GEAR = [
   { id: 'poison', price: 6000 }, { id: 'lockpick', price: 4000 }, { id: 'medkit', price: 4000 }, { id: 'charge', price: 20000 }
 ];
 const SUITS = [
+  { id: 'slate', name: 'Slate Grey', price: 0, jacket: [0.27, 0.3, 0.34], pants: [0.24, 0.27, 0.31], shirt: [0.93, 0.94, 0.96] },
   { id: 'classic', name: 'Classic Black', price: 0, jacket: [0.08, 0.08, 0.09], pants: [0.08, 0.08, 0.09], shirt: [0.95, 0.95, 0.95] },
   { id: 'charcoal', name: 'Charcoal Pinstripe', price: 8000, jacket: [0.26, 0.26, 0.28], pants: [0.24, 0.24, 0.26], shirt: [0.9, 0.92, 0.96] },
   { id: 'navy', name: 'Navy Three-Piece', price: 12000, jacket: [0.1, 0.14, 0.32], pants: [0.1, 0.14, 0.32], shirt: [0.95, 0.95, 0.95] },
@@ -42,7 +43,7 @@ const HAIR_COLS = [[0.06, 0.05, 0.05], [0.25, 0.16, 0.1], [0.45, 0.3, 0.16], [0.
 const BEARDS = ['none', 'stubble', 'moustache', 'goatee', 'full', 'chinstrap'];
 const BEARD_NAMES = { none: 'Clean Shaven', stubble: 'Stubble', moustache: 'Moustache', goatee: 'Goatee', full: 'Full Beard', chinstrap: 'Chinstrap' };
 const EYEWEAR = ['none', 'shades', 'glasses'];
-const TIES = [[0.75, 0.05, 0.08], [0.06, 0.06, 0.07], [0.1, 0.2, 0.6], [0.85, 0.7, 0.2], [0.2, 0.5, 0.3], [0.9, 0.9, 0.9]];
+const TIES = [[0.06, 0.48, 0.47], [0.06, 0.06, 0.07], [0.1, 0.2, 0.6], [0.85, 0.7, 0.2], [0.2, 0.5, 0.3], [0.9, 0.9, 0.9], [0.75, 0.05, 0.08]];
 const UPGRADES = {
   hide: { name: 'Hideout', levels: [{ price: 30000, label: 'Loft Conversion' }, { price: 90000, label: 'Penthouse' }, { price: 200000, label: 'Kingpin Vault' }] },
   slots: { name: 'Loadout Slots', levels: [{ price: 15000, label: '3 Gear Slots' }, { price: 35000, label: '4 Gear Slots' }, { price: 70000, label: '5 Gear Slots' }] },

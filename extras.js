@@ -22,7 +22,11 @@ function ensureExtras() {
   const P = S.prog; if (P) { P.cuts = P.cuts || {}; P.career = P.career || {}; }
 }
 
-['#shud', '#rphud', '#cine'].forEach(s => { const e = document.querySelector(s); if (e) e.innerHTML = e.innerHTML; });
+(function () {
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT), hits = [];
+  while (w.nextNode()) if (w.currentNode.nodeValue.indexOf('{i:') >= 0) hits.push(w.currentNode);
+  for (const t of hits) { const sp = document.createElement('span'); sp.innerHTML = t.nodeValue; t.parentNode.replaceChild(sp, t); }
+})();
 
 /* reset per-scene camera tweaks whenever a map loads */
 (function () {
@@ -201,7 +205,7 @@ const Cutscene = {
     for (const a of this.actors) {
       if (a.y > Game.cutY + 0.5) continue;
       if (a.pet) { drawPet(a, t); continue; }
-      drawCharacter(a.x, a.y, a.z, a.face, a.looks, a.outfit, a.suit || null, { idle: a.idle, t: t + a.x }, a.target ? { emit: [1, 0.1, 0.1, 0.1 + 0.08 * Math.sin(t * 4)] } : undefined);
+      drawCharacter(a.x, a.y, a.z, a.face, a.looks, a.outfit, a.suit || null, { idle: a.idle, t: t + a.x }, a.target ? { emit: [1, 0.72, 0.15, 0.12 + 0.08 * Math.sin(t * 4)] } : undefined);
     }
   },
   finish() {
@@ -420,8 +424,8 @@ const Replay = {
     s.tg.forEach((q, j) => {
       if (q.st === 3 || q.y > cut + 0.5) return;
       const T = R.targets[j], dead = q.st === 2;
-      drawCharacter(q.x, q.y, q.z, q.face, T.looks, T.outfit, null, { walk: q.st === 1, phase: t * 9, dead, deadK: 1, t }, dead ? undefined : { emit: [1, 0.1, 0.1, 0.12 + 0.08 * Math.sin(t * 4)] });
-      if (!dead) Engine.box(M4.mul(M4.T(q.x, q.y + 2.4 + Math.sin(t * 3) * 0.1, q.z), M4.mul(M4.RY(t * 2), M4.mul(M4.RZ(Math.PI / 4), M4.S(0.22, 0.22, 0.22)))), [1, 0.15, 0.15], [1, 0.1, 0.1, 0.9]);
+      drawCharacter(q.x, q.y, q.z, q.face, T.looks, T.outfit, null, { walk: q.st === 1, phase: t * 9, dead, deadK: 1, t }, dead ? undefined : { emit: [1, 0.72, 0.15, 0.14 + 0.08 * Math.sin(t * 4)] });
+      if (!dead) Engine.box(M4.mul(M4.T(q.x, q.y + 2.4 + Math.sin(t * 3) * 0.1, q.z), M4.mul(M4.RY(t * 2), M4.mul(M4.RZ(Math.PI / 4), M4.S(0.22, 0.22, 0.22)))), [1, 0.78, 0.25], [1, 0.72, 0.15, 0.95]);
     });
     R.ev.forEach((e, i) => {
       if (e.k !== 'kill' || e.ti >= 0 || e.t > this.t || e.y > cut + 0.5 || !near(e.x, e.z)) return;

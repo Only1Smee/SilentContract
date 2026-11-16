@@ -377,7 +377,7 @@ const UI = {
   contextMenu(sx, sy, ent, opts) {
     const m = $('#ctx'); m.innerHTML = '';
     const cat = propCategory(ent);
-    m.style.boxShadow = cat ? `inset 4px 0 0 ${ACT_CSS[cat]}, 0 14px 40px rgba(0,0,0,.6)` : (ent && ent.kind ? `inset 4px 0 0 ${ent.isTarget ? '#ff2a4a' : '#ddd'}, 0 14px 40px rgba(0,0,0,.6)` : '');
+    m.style.boxShadow = cat ? `inset 4px 0 0 ${ACT_CSS[cat]}, 0 14px 40px rgba(0,0,0,.6)` : (ent && ent.kind ? `inset 4px 0 0 ${ent.isTarget ? '#ffc23d' : '#ddd'}, 0 14px 40px rgba(0,0,0,.6)` : '');
     for (const o of opts) {
       if (o.header) { m.appendChild(el('div', 'ctx-h' + (o.dim ? ' dim' : ''), o.label)); continue; }
       const b = el('button', 'ctx-b' + (o.hl ? ' hl' : '') + (o.acc ? ' acc' : ''), `<span>${o.icon || ''}</span>${o.label}`);
@@ -538,9 +538,9 @@ const UI = {
       if (n.isTarget) continue;
       dot(n.x, n.z, 0.8, dead ? '#555' : n.state === 'alert' ? '#f33' : GUARDLIKE(n.kind) ? '#6af' : '#ddd');
     }
-    for (const t2 of Game.targets || []) if (t2 !== Game.target && t2.state !== 'dead' && (Game.C.intel >= 1 || Game.targetVisible)) dot(t2.x, t2.z, 1.4, '#f55');
+    for (const t2 of Game.targets || []) if (t2 !== Game.target && t2.state !== 'dead' && (Game.C.intel >= 1 || Game.targetVisible)) dot(t2.x, t2.z, 1.4, '#ffd36b');
     const t = Game.target;
-    if (t && (Game.C.intel >= 1 || Game.targetVisible)) { dot(t.x, t.z, 1.5, t.state === 'dead' ? '#700' : '#f22'); if (Math.abs(t.y - P.y) > 2) { ctx.strokeStyle = '#f22'; ctx.lineWidth = 0.4; ctx.beginPath(); ctx.arc(t.x, t.z, 2.4, 0, 7); ctx.stroke(); } }
+    if (t && (Game.C.intel >= 1 || Game.targetVisible)) { dot(t.x, t.z, 1.5, t.state === 'dead' ? '#654' : '#ffc23d'); if (Math.abs(t.y - P.y) > 2) { ctx.strokeStyle = '#ffc23d'; ctx.lineWidth = 0.4; ctx.beginPath(); ctx.arc(t.x, t.z, 2.4, 0, 7); ctx.stroke(); } }
     ctx.restore();
     // player arrow
     ctx.save(); ctx.translate(S / 2, S / 2); ctx.rotate(Math.PI - yaw - P.face + Math.PI);
@@ -562,7 +562,7 @@ function drawPortrait(cv, L, outfit) {
   const px = (x, y, w, h, c) => { ctx.fillStyle = c; ctx.fillRect(x * s, y * s, w * s, h * s); };
   const oc = outfitColors(L, outfit, L.suit);
   px(0, 0, 16, 16, '#1d1f24');
-  px(0, 0, 16, 1, '#c8102e');
+  px(0, 0, 16, 1, '#0e9f97');
   const sk = rgb(SKINS[L.skin] || SKINS[0]), hc = rgb(HAIR_COLS[L.hairCol] || HAIR_COLS[0]);
   px(2, 12, 12, 4, rgb(oc.jacket)); px(6, 12, 4, 4, rgb(oc.shirt)); if (!oc.noTie) px(7, 12, 2, 4, rgb(oc.tie));
   px(6, 11, 4, 2, sk);
