@@ -433,6 +433,51 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;ba
 .sn-t{flex:1;min-width:150px;display:flex;gap:8px;align-items:center;background:#1b1d22;border:1px solid var(--line);padding:8px}
 .sn-t .portrait{width:56px;height:56px}.sn-t b{display:block;font-size:13px}.sn-t span{font-size:11px;color:var(--red2);text-transform:uppercase;letter-spacing:.06em}
 @keyframes blink{to{opacity:.35}}
+
+.mm-open{position:absolute;left:-4px;top:-4px;width:30px;height:30px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.mm-open .ico{width:16px;height:16px}
+.mmw{cursor:pointer}
+#bigmap{position:fixed;inset:0;z-index:200;background:rgba(6,8,10,.94);display:flex;flex-direction:column;padding:calc(8px + var(--st)) calc(10px + var(--sr)) calc(8px + var(--sb)) calc(10px + var(--sl))}
+#bigmap .bm-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#bigmap .bm-t{font-family:var(--hf);font-weight:700;letter-spacing:.12em;font-size:15px;flex:1;min-width:120px}
+#bigmap .bm-fl{display:flex;gap:4px;flex-wrap:wrap}
+#bigmap .bm-fl button{padding:8px 12px;background:#1d2024;border:1px solid var(--line);font-family:var(--hf);font-weight:700;font-size:12px;letter-spacing:.08em}
+#bigmap .bm-fl button.on{background:var(--red);border-color:var(--red2)}
+#bigmap .bm-fl button.you::after{content:" \2022";color:#fff}
+#bmCv{flex:1;width:100%;min-height:0;touch-action:none}
+#bigmap .bm-leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:var(--dim);justify-content:center}
+#bigmap .bm-leg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:4px;vertical-align:-1px}#bigmap .bm-leg i.sq{border-radius:1px}
+#bigmap .bm-hint{text-align:center;font-size:11px;color:var(--dim);margin-top:4px;letter-spacing:.06em}
+
+/* ---------- responsive icon columns (no cropping in short landscape screens) ---------- */
+.side-btns{gap:clamp(3px,1vh,8px);max-height:calc(100vh - 94px - var(--st) - var(--sb));overflow-y:auto;scrollbar-width:none}
+.side-btns::-webkit-scrollbar{display:none}
+.sb{width:clamp(44px,10.5vh,64px);height:clamp(38px,9.6vh,60px);flex:none}
+.sb b .ico{width:clamp(15px,4.2vh,24px);height:clamp(15px,4.2vh,24px)}
+.sb small{font-size:clamp(8px,2vh,11px)}
+@media (orientation:portrait){.sb{width:56px;height:54px}.sb b .ico{width:22px;height:22px}.sb small{font-size:10px}}
+.rbtns{gap:clamp(4px,1.1vh,8px);flex-flow:column wrap-reverse;max-height:calc(100vh - 170px - var(--st) - var(--sb));align-content:flex-start}
+.rb{width:clamp(40px,11vh,56px);height:clamp(40px,11vh,56px);flex:none}
+.rb .ico{width:clamp(16px,4vh,22px);height:clamp(16px,4vh,22px)}
+.rb small{font-size:clamp(7px,1.7vh,8px)}
+#shud .s-left,#shud .s-right{gap:clamp(4px,1.1vh,8px)}
+#sFire{width:clamp(64px,19vh,96px);height:clamp(64px,19vh,96px)}
+@media (orientation:portrait){.rb{width:52px;height:52px}.rbtns{max-height:calc(100vh - 260px - var(--st) - var(--sb))}}
+
+/* ---------- analogue stick, look pad, first-person crosshair, use button ---------- */
+#lookpad{position:fixed;inset:0;touch-action:none}
+#stickzone{position:fixed;left:0;bottom:0;width:42%;height:55%;touch-action:none}
+#stickBase{position:fixed;width:112px;height:112px;margin:-56px 0 0 -56px;border-radius:50%;border:2px solid rgba(255,255,255,.28);background:rgba(0,0,0,.28);opacity:0;transition:opacity .12s;pointer-events:none;z-index:2}
+#stickBase.on{opacity:1}
+#stickKnob{position:absolute;left:50%;top:50%;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.8);box-shadow:0 2px 8px rgba(0,0,0,.5);transform:translate(-50%,-50%)}
+.stk-hint{position:absolute;left:calc(24px + var(--sl));bottom:calc(24px + var(--sb));width:clamp(70px,20vh,100px);height:clamp(70px,20vh,100px);border-radius:50%;border:2px dashed rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:.16em;color:rgba(255,255,255,.45);pointer-events:none;transition:opacity .2s}
+#stickBase.on~.stk-hint{opacity:0}
+#xhair{position:fixed;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px rgba(0,0,0,.55);pointer-events:none;z-index:5}
+#useBtn{position:fixed;right:calc(clamp(56px,13vh,72px) + 14px + var(--sr));bottom:calc(16px + var(--sb));z-index:8;min-width:80px;padding:9px 12px;display:flex;flex-direction:column;align-items:center;gap:1px;background:var(--red);border:2px solid var(--red2);border-radius:12px;font-family:var(--hf);letter-spacing:.08em;box-shadow:0 4px 16px rgba(0,0,0,.45)}
+#useBtn .ico{width:22px;height:22px}#useBtn b{font-size:15px}#useBtn small{font-size:10px;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:inherit}
+#useBtn:active{transform:scale(.94)}
+.rb.on{background:var(--red)!important}
+@media (orientation:portrait){#useBtn{bottom:calc(150px + var(--sb))}#stickzone{height:45%;bottom:80px}}
 </style>
 </head>
 <body>
@@ -472,7 +517,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;ba
 <div id="mhud" class="hidden">
   <div class="tcard"><canvas id="tPortrait" width="48" height="48"></canvas><div><div class="tn"><span id="tName">Target</span><small>TARGET</small></div><div id="tStatus">—</div><div class="subl">{i:shirt} <span id="disg">Your Suit</span> · <span id="zone">Public</span></div></div></div>
   <div id="obj"></div>
-  <div class="mmw"><canvas id="mm" width="264" height="264"></canvas><div id="mmFloor">GROUND</div><div id="hpbar"><i></i></div></div>
+  <div class="mmw"><canvas id="mm" width="264" height="264"></canvas><div class="mm-open">{i:map}</div><div id="mmFloor">GROUND</div><div id="hpbar"><i></i></div></div>
   <div id="aware" class="aware hidden"></div>
   <div id="inv"></div>
   <div class="rbtns">
@@ -522,6 +567,12 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;ba
   <button class="cn-skip" id="cnSkip">SKIP {i:fast}</button>
 </div>
 
+<div id="bigmap" class="hidden">
+  <div class="bm-top"><div class="bm-t">{i:map} <span id="bmCity"></span></div><div class="bm-fl" id="bmFloors"></div><button class="rb" id="bmClose">{i:x}<small>CLOSE</small></button></div>
+  <canvas id="bmCv"></canvas>
+  <div class="bm-leg"><span><i style="background:#fff"></i>You</span><span><i style="background:#ffc23d"></i>Target</span><span><i style="background:#6af"></i>Guard</span><span><i style="background:#ddd"></i>Civilian</span><span><i style="background:#3f6"></i>Exit</span><span><i style="background:#f5d142"></i>Item</span><span><i style="background:#c77dff"></i>Disguise</span><span><i class="sq" style="background:#968246"></i>Staff area</span><span><i class="sq" style="background:#963c3c"></i>Security</span><span><i class="sq" style="background:#785096"></i>VIP</span></div>
+  <div class="bm-hint">Tap anywhere on the map to walk there</div>
+</div>
 <div id="popups"></div>
 <div id="instfx" class="hidden"></div>
 <div id="tut" class="hidden"></div>
@@ -549,5 +600,6 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;ba
 <script src="ui.js"></script>
 <script src="menus.js"></script>
 <script src="extras.js"></script>
+<script src="controls.js"></script>
 </body>
 </html>
